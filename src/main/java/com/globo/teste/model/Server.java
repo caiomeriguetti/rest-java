@@ -51,12 +51,12 @@ public class Server {
         return s;
     }
     
-    public static ListWrapper<Server> fromIterable (FindIterable<Document> iterable) {
-        ListWrapper<Server> wrapper = new ListWrapper<Server>();
+    public static Server[] fromIterable (FindIterable<Document> iterable) {
+        List<Server> list = new ArrayList<Server>();
         for (Document doc: iterable) {
-            wrapper.list.add(Server.fromDocument(doc));
+            list.add(Server.fromDocument(doc));
         }
-        return wrapper;
+        return list.toArray(new Server[list.size()]);
     }
     
 }
