@@ -1,7 +1,5 @@
 package com.globo.teste.rest;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
@@ -14,6 +12,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.globo.teste.model.Server;
+import com.globo.teste.model.ServerPackage;
 import com.globo.teste.services.ServerService;
 
 @Path("servers")
@@ -52,9 +51,10 @@ public class ServersResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response listPackages(@PathParam("id") String id) {
 	    
-	    String[] packages = serverService.getPackages(id);
-	    
-		return Response.status(200).entity(packages).build();
+	    ServerPackage[] packages = serverService.getPackages(id);
+	    Response r = Response.status(200).entity(packages).build();
+	      
+		return r;
 	}
 	
 	@GET

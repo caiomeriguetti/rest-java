@@ -1,19 +1,12 @@
 package com.globo.teste.services;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import com.globo.teste.db.DB;
 import com.globo.teste.model.Server;
-import com.jcraft.jsch.Channel;
-import com.jcraft.jsch.ChannelExec;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
+import com.globo.teste.model.ServerPackage;
+import com.globo.teste.ssh.RemoteCommand;
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
@@ -24,59 +17,24 @@ public class ServerService {
 		return false;
 	}
 	
-	public String[] getPackages (String id) {
+	public ServerPackage[] getPackages (String id) {
 		Server server = getServerById(id);
 	    
-	    JSch jsch=new JSch();
-	    try {
-	    	Session session = jsch.getSession(server.getUser(), server.getIp(), 22);
+	    RemoteCommand cmd = new RemoteCommand("dpkg --get-selections");
+	    String result = cmd.execute(server);
+	    
+	    String[] lines = result.split("\n");
+	    ServerPackage[] packages = new ServerPackage[lines.length];
+	    for (int i = 0; i < lines.length; i++) {
+	    	String line = lines[i];
+	    	String packageName = line.split("\\s+")[0];
 	    	
-	    	java.util.Properties config = new java.util.Properties(); 
-	    	config.put("StrictHostKeyChecking", "no");
-	    	session.setConfig(config);
-	    	
-	    	session.setPassword(server.getPassword());
-		    
-		    session.connect(30000);
-
-		    Channel channel=session.openChannel("exec");
-		    
-		    ((ChannelExec)channel).setCommand("dpkg -l");
-
-			  InputStream in=channel.getInputStream();
-			  OutputStream out=channel.getOutputStream();
-			  ((ChannelExec)channel).setErrStream(System.err);
-			
-			  channel.connect();
-			
-			  out.flush();
-			
-			  byte[] tmp=new byte[1024];
-			  StringBuilder builder = new StringBuilder();
-			  while(true){
-			    while(in.available()>0){
-			      int i=in.read(tmp, 0, 1024);
-			      if(i<0)break;
-			      builder.append(new String(tmp, 0, i));
-			    }
-			    if(channel.isClosed()){
-			      break;
-			    }
-			    try{Thread.sleep(1000);}catch(Exception ee){}
-			  }
-			  
-			  System.out.println(builder.toString());
-			  channel.disconnect();
-			  session.disconnect();
-		      
-	    } catch (JSchException | IOException e) {
-	    	System.out.println(e.getMessage());
-	    	return null;
+	    	ServerPackage pack = new ServerPackage();
+	    	pack.setName(packageName);
+	    	packages[i] = pack;
 	    }
 	    
-	    
-	    
-	    return null;
+	    return packages;
 	}
 	
 	public Server[] list() {
