@@ -15,9 +15,25 @@ import com.mongodb.client.FindIterable;
 public class Server {
     public String id;
     public String ip;
-    public String name;
+    public String user;
+    public String password;
+	public String distribution;
+	
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
     
-    public String getId() {
+    public String getDistribution() {
+		return distribution;
+	}
+	public void setDistribution(String distribution) {
+		this.distribution = distribution;
+	}
+	
+	public String getId() {
         return id;
     }
     public void setId(String id) {
@@ -30,24 +46,28 @@ public class Server {
     public void setIp(String ip) {
         this.ip = ip;
     }
-    public String getName() {
-        return name;
+    public String getUser() {
+        return user;
     }
-    public void setName(String name) {
-        this.name = name;
+    public void setUser(String user) {
+        this.user = user;
     }
     
     public Document toDocument () {
         Document doc = new Document();
-        doc.put("name", this.getName());
+        doc.put("user", this.getUser());
         doc.put("ip", this.getIp());
+        doc.put("distribution", this.getDistribution());
+        doc.put("password", this.getPassword());
         return doc;
     }
     
     public static Server fromDocument (Document doc) {
         Server s = new Server();
         s.setIp(doc.getString("ip"));
-        s.setName(doc.getString("name"));
+        s.setUser(doc.getString("user"));
+        s.setPassword(doc.getString("password"));
+        s.setDistribution(doc.getString("distribution"));
         return s;
     }
     
