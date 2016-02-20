@@ -11,6 +11,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.globo.teste.model.GenericMessage;
 import com.globo.teste.model.Server;
 import com.globo.teste.model.ServerPackage;
 import com.globo.teste.services.ServerService;
@@ -26,8 +27,12 @@ public class ServersResource {
 	public Response removePackage(@PathParam("id") String id,
 			   					  @PathParam("package") String packageName) {
 		
-		
-		return null;
+		String installResult = serverService.uninstallPackage(id, packageName);
+	    
+	    GenericMessage result = new GenericMessage();
+	    result.text = installResult;
+	    
+		return Response.status(200).entity(result).build();
 		
 	}
 	
@@ -37,11 +42,10 @@ public class ServersResource {
 	public Response installPackage(@PathParam("id") String id,
 								   @PathParam("package") String packageName) {
 	    
-	    final boolean installed = serverService.installPackage(id, packageName);
+	    String installResult = serverService.installPackage(id, packageName);
 	    
-	    Object result = new Object(){
-	    	public boolean success = installed;
-	    };
+	    GenericMessage result = new GenericMessage();
+	    result.text = installResult;
 	    
 		return Response.status(200).entity(result).build();
 	}

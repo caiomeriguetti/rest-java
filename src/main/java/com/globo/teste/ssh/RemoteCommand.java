@@ -13,8 +13,13 @@ import com.jcraft.jsch.Session;
 
 public class RemoteCommand {
 	private String command;
+	private boolean isSudo;
 	public RemoteCommand(String command) {
 		this.command = command;
+	}
+	
+	public void setSudo(boolean isSudo) {
+		this.isSudo = isSudo;
 	}
 	
 	public String execute(Server server) {
@@ -34,16 +39,24 @@ public class RemoteCommand {
 		    session.connect(30000);
 
 		    channel = session.openChannel("exec");
+		    String commandStr = this.command;
 		    
-		    ((ChannelExec)channel).setCommand(this.command);
+		    if (isSudo) {
+		    	commandStr = "sudo -S -p '' "+ commandStr;
+		    }
+		    
+		    ((ChannelExec)channel).setCommand(commandStr);
 
-			  InputStream in=channel.getInputStream();
-			  OutputStream out=channel.getOutputStream();
-			  ((ChannelExec)channel).setErrStream(System.err);
+			InputStream in=channel.getInputStream();
+			OutputStream out=channel.getOutputStream();
+			((ChannelExec)channel).setErrStream(System.err);
 			
-			  channel.connect();
+			channel.connect();
 			
-			  out.flush();
+			if (isSudo) {
+				out.write((server.getPassword()+"\n").getBytes());
+			}
+			out.flush();
 			
 			  byte[] tmp=new byte[1024];
 			  StringBuilder builder = new StringBuilder();
@@ -63,7 +76,7 @@ public class RemoteCommand {
 		      
 	    } catch (JSchException | IOException e) {
 	    	//TODO: log the exception
-	    	System.out.println(e.getMessage());
+	    	System.out.println("ERROR: " + e.getMessage());
 	    } finally {
 	    	if (channel != null) channel.disconnect();
 	    	if (session != null) session.disconnect();

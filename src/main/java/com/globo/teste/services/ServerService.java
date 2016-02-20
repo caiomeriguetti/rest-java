@@ -13,8 +13,24 @@ import com.mongodb.client.MongoCollection;
 
 public class ServerService {
 	
-	public boolean installPackage(String id, String packageName) {
-		return false;
+	public String uninstallPackage(String id, String packageName) {
+		Server server = getServerById(id);
+		
+		RemoteCommand cmd = new RemoteCommand("apt-get -y remove "+packageName);
+		cmd.setSudo(true);
+	    String result = cmd.execute(server);
+		
+		return result;
+	}
+	
+	public String installPackage(String id, String packageName) {
+		Server server = getServerById(id);
+		
+		RemoteCommand cmd = new RemoteCommand("apt-get -y install "+packageName);
+		cmd.setSudo(true);
+	    String result = cmd.execute(server);
+		
+		return result;
 	}
 	
 	public ServerPackage[] getPackages (String id) {
