@@ -5,6 +5,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -22,7 +23,7 @@ public class ServersResource {
 	@Inject ServerService serverService;
 	
 	@DELETE
-	@Path("{id}/uninstall/{package}")
+	@Path("{id}/{package}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response removePackage(@PathParam("id") String id,
 			   					  @PathParam("package") String packageName) {
@@ -36,8 +37,8 @@ public class ServersResource {
 		
 	}
 	
-	@POST
-	@Path("{id}/install/{package}")
+	@PUT
+	@Path("{id}/{package}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response installPackage(@PathParam("id") String id,
 								   @PathParam("package") String packageName) {
@@ -56,21 +57,81 @@ public class ServersResource {
 	public Response listPackages(@PathParam("id") String id) {
 	    
 	    ServerPackage[] packages = serverService.getPackages(id);
-	    Response r = Response.status(200).entity(packages).build();
+	    Object entity = packages;
+	    if (entity == null) {
+	    	GenericMessage response = new GenericMessage();
+	    	response.code = 0;
+	    	response.text = "Couldnt retrieve server packages";
+	    	
+	    	entity = response;
+	    }
+	    
+	    Response r = Response.status(200).entity(entity).build();
 	      
 		return r;
 	}
 	
+	@DELETE
+	@Path("{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response delete(@PathParam("id") String id) {
+		
+		boolean success = serverService.delete(id);
+		
+		GenericMessage response = new GenericMessage();
+		response.code=(success) ? 1: 0;
+		
+		return Response.status(200).entity(response).build();
+	}
+	
+	@PUT
+	@Path("{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response update(@PathParam("id") String id,
+						   @FormParam("user") String user,
+						   @FormParam("password") String password,
+				           @FormParam("ip") String ip,
+				           @FormParam("distribution") String distribution) {
+		
+		Server toBeUpdated = new Server();
+		toBeUpdated.setIp(ip);
+		toBeUpdated.setUser(user);
+		toBeUpdated.setPassword(password);
+		toBeUpdated.setDistribution(distribution);
+		
+		boolean updated = serverService.update(id, toBeUpdated);
+		GenericMessage response = new GenericMessage();
+		if (!updated) {
+			response.code = 0;
+		} else {
+			response.code = 1;
+		}
+		
+		return Response.status(200).entity(response).build();
+	}
+	
 	@GET
-	@Path("/list")
+	@Path("{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getServerById(@PathParam("id") String id) {
+	    Server server = serverService.getServerById(id);
+	    Object response = server;
+	    if (server == null) {
+	    	response = new GenericMessage();
+	    	((GenericMessage)response).code = 0;
+	    	((GenericMessage)response).text = "Object doesnt exist";
+	    }
+		return Response.status(200).entity(response).build();
+	}
+	
+	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response list() {
 	    Server[] servers = serverService.list();
 		return Response.status(200).entity(servers).build();
 	}
 	
-	@POST
-	@Path("add")
+	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response add(@FormParam("user") String user,
 						@FormParam("password") String password,

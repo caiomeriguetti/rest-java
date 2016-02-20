@@ -1,13 +1,12 @@
 package com.globo.teste.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.bson.Document;
+import org.bson.types.ObjectId;
 
 import com.mongodb.client.FindIterable;
 
@@ -68,6 +67,10 @@ public class Server {
         s.setUser(doc.getString("user"));
         s.setPassword(doc.getString("password"));
         s.setDistribution(doc.getString("distribution"));
+        ObjectId id = doc.getObjectId("_id");
+        if (id != null) {
+        	s.setId(id.toHexString());
+        }
         return s;
     }
     
