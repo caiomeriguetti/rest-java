@@ -31,6 +31,72 @@ public class ServersResourceTest {
 	}
 	
 	@Test
+	public void testInstallListRemovePackageOnServer() {
+		//TODO: change this to use environment variables with 
+		// valid server credentials to install/uninstall packages on
+		Server onlineServer = new Server();
+		onlineServer.setIp("54.187.107.64");
+		onlineServer.setUser("teste");
+		onlineServer.setPassword("1234");
+		
+		//adding a server with valid credentials( and that also is online)
+		
+		MultivaluedMap<String, String> formData = new MultivaluedHashMap<String, String>();
+		
+		formData.add("ip", onlineServer.getIp());
+		formData.add("user", onlineServer.getUser());
+		formData.add("password", onlineServer.getPassword());
+		formData.add("distribution", onlineServer.getDistribution());
+		
+		Invocation.Builder request = invocation(webTarget.path("servers"));
+		Response response = request.put(Entity.form(formData));
+		
+		String entity = response.readEntity(String.class);
+		JSONObject responseObject = new JSONObject(entity);
+		
+		//installing the package on the server
+		String serverId = responseObject.getString("id");
+		request = invocation(webTarget.path("servers/"+serverId+"/iotop"));
+		
+		response = request.put(Entity.form(new MultivaluedHashMap<String, String>()));
+		
+		entity = response.readEntity(String.class);
+		
+		Assert.assertNotNull(entity);
+		
+		responseObject = new JSONObject(entity);
+		
+		Assert.assertNotNull(responseObject);
+		Assert.assertEquals(responseObject.getInt("code"), 1);
+		
+		//getting the list of packages
+		request = invocation(webTarget.path("servers/"+serverId+"/packages"));
+		response = request.get();
+		
+		entity = response.readEntity(String.class);
+		
+		Assert.assertNotNull(entity);
+		
+		JSONArray packageList = new JSONArray(entity);
+		
+		Assert.assertNotNull(packageList);
+		Assert.assertTrue(packageList.length() >= 1);
+		
+		//deleting the package from the server
+		request = invocation(webTarget.path("servers/"+serverId+"/iotop"));
+		response = request.delete();
+		
+		entity = response.readEntity(String.class);
+		
+		Assert.assertNotNull(entity);
+		
+		responseObject = new JSONObject(entity);
+		
+		Assert.assertNotNull(responseObject);
+		Assert.assertEquals(responseObject.getInt("code"), 1);
+	}
+	
+	@Test
 	public void testDeleteServer() {
 		
 		//adding

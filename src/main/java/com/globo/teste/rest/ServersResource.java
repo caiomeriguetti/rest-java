@@ -32,6 +32,7 @@ public class ServersResource {
 	    
 	    GenericMessage result = new GenericMessage();
 	    result.text = installResult;
+	    result.code = (!serverService.hasPackage(id, packageName)) ? 1 : 0;
 	    
 		return Response.status(200).entity(result).build();
 		
@@ -47,6 +48,7 @@ public class ServersResource {
 	    
 	    GenericMessage result = new GenericMessage();
 	    result.text = installResult;
+	    result.code = (serverService.hasPackage(id, packageName)) ? 1 : 0;
 	    
 		return Response.status(200).entity(result).build();
 	}

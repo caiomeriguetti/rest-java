@@ -29,6 +29,20 @@ public class ServerService {
 	}
 	
 	/**
+	 * Check if a package is installed on a server
+	 * */
+	public boolean hasPackage(Server server, String packageName) {
+		RemoteCommand cmd = new RemoteCommand("dpkg -s "+packageName);
+	    String result = cmd.execute(server);
+
+		return result.indexOf("Status: install ok installed") >= 0;
+	}
+	public boolean hasPackage(String id, String packageName) {
+		Server server = this.getServerById(id);
+		return this.hasPackage(server, packageName);
+	}
+	
+	/**
 	 * Install a package on a server
 	 * */
 	public String installPackage(String id, String packageName) {
