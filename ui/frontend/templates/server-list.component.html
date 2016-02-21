@@ -1,0 +1,5 @@
+<div class="container">
+	<ul class="list-group"> 
+	  <li *ngFor="#server of listServers" class="list-group-item app-server" (click)="onClickServer(server)">{{server.ip}}</li>
+	</ul>
+</div>
