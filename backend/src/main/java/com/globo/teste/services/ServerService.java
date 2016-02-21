@@ -1,5 +1,8 @@
 package com.globo.teste.services;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
@@ -64,22 +67,26 @@ public class ServerService {
 	    RemoteCommand cmd = new RemoteCommand("dpkg --get-selections");
 	    String result = cmd.execute(server);
 	    
-	    ServerPackage[] packages = null;
+	    List<ServerPackage> packages = null;
 	    
 	    if (result != null) {
 		    String[] lines = result.split("\n");
-		    packages = new ServerPackage[lines.length];
+		    packages = new ArrayList<ServerPackage>();
 		    for (int i = 0; i < lines.length; i++) {
 		    	String line = lines[i];
-		    	String packageName = line.split("\\s+")[0];
+		    	String[] parts = line.split("\\s+");
 		    	
-		    	ServerPackage pack = new ServerPackage();
-		    	pack.setName(packageName);
-		    	packages[i] = pack;
+		    	if (parts[1].toLowerCase().equals("install")) {
+			    	String packageName = parts[0];
+			    	
+			    	ServerPackage pack = new ServerPackage();
+			    	pack.setName(packageName);
+			    	packages.add(pack);
+		    	}
 		    }
 	    }
 	    
-	    return packages;
+	    return packages.toArray(new ServerPackage[packages.size()]);
 	}
 	
 	/**

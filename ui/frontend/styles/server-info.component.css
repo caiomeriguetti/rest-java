@@ -16,6 +16,15 @@
 	margin-top: 10px;
 }
 
+.app-packagelist li:hover{
+	background: #e5e5e5;
+}
+
+
+.app-packagelist .loader {
+	float: right;
+}
+
 .alert {
 	margin: 0;
 }

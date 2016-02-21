@@ -1,10 +1,5 @@
 
 <div class="container">
-	<div class="row" *ngIf="loading">
-		<div class="col-md-12 loading">
-			<img src="img/loader.gif" />
-		</div>
-	</div>
 	<div class="row" *ngIf="infoMessage != null">
 		<div class="col-md-12">
 		  <div class="alert alert-{{infoMessage.type}}" role="alert" [innerHtml]="infoMessage.text"></div>
@@ -14,10 +9,13 @@
 	<div class="row">
 		<div class="col-md-12">
 			<div class="input-group">
-				<span class="input-group-addon" id="basic-addon1">Search</span>
+				<span class="input-group-addon" id="basic-addon1">
+					<span *ngIf="!loading">Search</span>
+					<span *ngIf="loading"><img src="img/loader.gif" /></span>
+				</span>
 			  <input type="text" [disabled]="loading" #input class="form-control search-input" placeholder="Enter the package name" aria-describedby="basic-addon2" (keyup)="onSerachKeywordChange(input.value)">
 			  <span class="input-group-btn" *ngIf="canInstall">
-	        <button [disabled]="loading" class="btn btn-success" type="button" (click)="installPackage(input.value)">Install</button>
+	        <button [disabled]="loading" class="btn btn-success" type="button" (click)="installPackage(input.value)" [innerHtml]="(installing==false) ? 'Install' : 'Installing'"></button>
 	      </span>
 			</div>
 		</div>
@@ -25,9 +23,10 @@
 	<div class="row">
 		<div class="col-md-12">
 			<ul class="list-group app-packagelist"> 
-			  <li *ngFor="#package of packages" class="list-group-item app-package">
+			  <li *ngFor="#package of packages" [ngClass]="{'list-group-item': true,  'app-package': true, 'loading-package': package.loading}">
 			  	<span class="name">{{package.name}}</span>
-			  	<span class="glyphicon glyphicon-remove app-delpackage" (click)="onClickDel(package.name)"></span>
+			  	<span class="glyphicon glyphicon-remove app-delpackage" (click)="onClickDel(package.name)" *ngIf="!package.loading"></span>
+			  	<img src="img/loader.gif" class="loader" *ngIf="package.loading"/>
 			  </li>
 			</ul>
 		</div>

@@ -28,6 +28,7 @@ export class ServerInfoComponent implements OnInit {
   canInstall = false;
   infoMessage = null;
   loading = false;
+  installing = false;
 
   constructor (private backendService: BackendService, 
                private zone: NgZone,
@@ -43,6 +44,14 @@ export class ServerInfoComponent implements OnInit {
     this.packages.push({name: name});
   }
 
+  setLoadingPackage(name, loading) {
+    var result = $.grep(this.packages, function(e){ 
+      return e.name == name; 
+    });
+
+    result[0].loading = loading;
+  }
+
   removePackage (name) {
     var result = $.grep(this.packages, function(e){ 
       return e.name != name; 
@@ -53,10 +62,10 @@ export class ServerInfoComponent implements OnInit {
   delPackage (packageName) {
     var self = this;
     var confirmed = confirm("Are you sure?");
-    self.loading = true;
+    self.setLoadingPackage(packageName, true);
     if (confirmed) {
       this.backendService.delPackage(this._server.id, packageName function (result) {
-        self.loading = false;
+        self.setLoadingPackage(packageName, true);
         if (result.code === 1) {
           self.infoMessage = {
             text: "The package "+packageName+" was deleted.",
@@ -91,11 +100,13 @@ export class ServerInfoComponent implements OnInit {
 
   installPackage(name) {
     var self = this;
-    self.loading = true;
     var confirmed = confirm("Are you sure?");
     if (confirmed) {
+      self.loading = true;
+      self.installing = true;
       this.backendService.installPackage(this._server.id, name, function (result) {
         self.loading = false;
+        self.installing = false;
         if (result.code === 1) {
           self.infoMessage = {
             text: "The package "+name+" was installed.",

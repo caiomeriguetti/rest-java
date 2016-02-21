@@ -28,6 +28,7 @@ System.register(['angular2/core', './backend.service'], function(exports_1) {
                     this.canInstall = false;
                     this.infoMessage = null;
                     this.loading = false;
+                    this.installing = false;
                 }
                 Object.defineProperty(ServerInfoComponent.prototype, "server", {
                     get: function () {
@@ -46,6 +47,12 @@ System.register(['angular2/core', './backend.service'], function(exports_1) {
                 ServerInfoComponent.prototype.addPackage = function (name) {
                     this.packages.push({ name: name });
                 };
+                ServerInfoComponent.prototype.setLoadingPackage = function (name, loading) {
+                    var result = $.grep(this.packages, function (e) {
+                        return e.name == name;
+                    });
+                    result[0].loading = loading;
+                };
                 ServerInfoComponent.prototype.removePackage = function (name) {
                     var result = $.grep(this.packages, function (e) {
                         return e.name != name;
@@ -55,10 +62,10 @@ System.register(['angular2/core', './backend.service'], function(exports_1) {
                 ServerInfoComponent.prototype.delPackage = function (packageName) {
                     var self = this;
                     var confirmed = confirm("Are you sure?");
-                    self.loading = true;
+                    self.setLoadingPackage(packageName, true);
                     if (confirmed) {
                         this.backendService.delPackage(this._server.id, packageName, function (result) {
-                            self.loading = false;
+                            self.setLoadingPackage(packageName, true);
                             if (result.code === 1) {
                                 self.infoMessage = {
                                     text: "The package " + packageName + " was deleted.",
@@ -91,11 +98,13 @@ System.register(['angular2/core', './backend.service'], function(exports_1) {
                 };
                 ServerInfoComponent.prototype.installPackage = function (name) {
                     var self = this;
-                    self.loading = true;
                     var confirmed = confirm("Are you sure?");
                     if (confirmed) {
+                        self.loading = true;
+                        self.installing = true;
                         this.backendService.installPackage(this._server.id, name, function (result) {
                             self.loading = false;
+                            self.installing = false;
                             if (result.code === 1) {
                                 self.infoMessage = {
                                     text: "The package " + name + " was installed.",
