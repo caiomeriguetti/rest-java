@@ -3,3 +3,7 @@ backend/target
 backend/.classpath
 backend/.project
 backend/test-output
+
+ui/frontend/npm-debug.log
+ui/node_modules
+ui/frontend/node_modules
