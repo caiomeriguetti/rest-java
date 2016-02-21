@@ -1,0 +1,21 @@
+.app-delpackage {
+	float: right;
+	color: red;
+	cursor: pointer;
+}
+
+.loading {
+	text-align: center;
+}
+
+.loading img {
+	padding: 10px;
+}
+
+.app-packagelist {
+	margin-top: 10px;
+}
+
+.alert {
+	margin: 0;
+}

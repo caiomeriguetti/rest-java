@@ -1,0 +1,36 @@
+
+<div class="container">
+	<div class="row" *ngIf="loading">
+		<div class="col-md-12 loading">
+			<img src="img/loader.gif" />
+		</div>
+	</div>
+	<div class="row" *ngIf="infoMessage != null">
+		<div class="col-md-12">
+		  <div class="alert alert-{{infoMessage.type}}" role="alert" [innerHtml]="infoMessage.text"></div>
+		</div>
+	</div>
+	<h1>{{server.ip}}</h1>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="input-group">
+				<span class="input-group-addon" id="basic-addon1">Search</span>
+			  <input type="text" [disabled]="loading" #input class="form-control search-input" placeholder="Enter the package name" aria-describedby="basic-addon2" (keyup)="onSerachKeywordChange(input.value)">
+			  <span class="input-group-btn" *ngIf="canInstall">
+	        <button [disabled]="loading" class="btn btn-success" type="button" (click)="installPackage(input.value)">Install</button>
+	      </span>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<ul class="list-group app-packagelist"> 
+			  <li *ngFor="#package of packages" class="list-group-item app-package">
+			  	<span class="name">{{package.name}}</span>
+			  	<span class="glyphicon glyphicon-remove app-delpackage" (click)="onClickDel(package.name)"></span>
+			  </li>
+			</ul>
+		</div>
+	</div>
+	
+</div>
