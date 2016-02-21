@@ -19,7 +19,7 @@ import com.globo.teste.services.ServerService;
 
 @Path("servers")
 public class ServersResource {
-	
+
 	@Inject ServerService serverService;
 	
 	@DELETE

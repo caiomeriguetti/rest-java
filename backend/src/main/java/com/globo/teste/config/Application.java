@@ -8,10 +8,13 @@ import javax.ws.rs.ext.ContextResolver;
 import org.glassfish.jersey.moxy.json.MoxyJsonConfig;
 import org.glassfish.jersey.server.ResourceConfig;
 
+import com.globo.teste.rest.GlobalHeadersFilter;
+
 public class Application extends ResourceConfig {
     public Application() {
         register(new ApplicationBinder());
         register(getMoxyProvider());
+        register(GlobalHeadersFilter.class);
         packages(true, "com.globo.teste.rest");
     }
     

@@ -1,5 +1,5 @@
-.settings
-target
-.classpath
-.project
-test-output
+backend/.settings
+backend/target
+backend/.classpath
+backend/.project
+backend/test-output

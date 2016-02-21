@@ -76,7 +76,8 @@ public class RemoteCommand {
 		      
 	    } catch (JSchException | IOException e) {
 	    	//TODO: log the exception
-	    	System.out.println("ERROR: " + e.getMessage());
+	    	
+	    	return "Problem executing the command";
 	    } finally {
 	    	if (channel != null) channel.disconnect();
 	    	if (session != null) session.disconnect();
