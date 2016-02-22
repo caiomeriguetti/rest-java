@@ -1,0 +1,10 @@
+#!/bin/sh
+export SERVERSAPP_BACKEND_URL="http://localhost:8181/rest-api/api"
+
+export SERVERSAPP_TESTSERVER_IP="54.187.107.64"
+export SERVERSAPP_TESTSERVER_USERNAME="teste"
+export SERVERSAPP_TESTSERVER_PASSWORD="1234"
+
+export SERVERSAPP_DB_HOST="localhost"
+export SERVERSAPP_DB_PORT="27017"
+export SERVERSAPP_DB_NAME="servers"

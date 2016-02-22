@@ -1,3 +1,4 @@
+package com.globo.teste.tests;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -19,7 +20,7 @@ import com.globo.teste.model.Server;
 
 public class ServersResourceTest {
 	
-	private static String serverUrl = "http://localhost:8080/rest-java/api";
+	private static String serverUrl = Env.getBackendUrl();
 	
 	private Client client;
 	private WebTarget webTarget;
@@ -32,12 +33,10 @@ public class ServersResourceTest {
 	
 	@Test
 	public void testInstallListRemovePackageOnServer() {
-		//TODO: change this to use environment variables with 
-		// valid server credentials to install/uninstall packages on
 		Server onlineServer = new Server();
-		onlineServer.setIp("54.187.107.64");
-		onlineServer.setUser("teste");
-		onlineServer.setPassword("1234");
+		onlineServer.setIp(Env.getTestServerIp());
+		onlineServer.setUser(Env.getTestServerUsername());
+		onlineServer.setPassword(Env.getTestServerPassword());
 		
 		//adding a server with valid credentials( and that also is online)
 		
@@ -106,8 +105,8 @@ public class ServersResourceTest {
 		
 		Server serverData = new Server();
 		serverData.setIp("192.168.100.103");
-		serverData.setUser("ximbaia");
-		serverData.setPassword("pirictum");
+		serverData.setUser("sampleusername");
+		serverData.setPassword("thisisthepassword");
 		serverData.setDistribution("Debian");
 		
 		formData.add("ip", serverData.getIp());
@@ -160,9 +159,9 @@ public class ServersResourceTest {
 		
 		Server serverData = new Server();
 		serverData.setIp("192.168.100.103");
-		serverData.setUser("ximbaia");
-		serverData.setPassword("pirictum");
-		serverData.setDistribution("Debian");
+        serverData.setUser("sampleusername");
+        serverData.setPassword("thisisthepassword");
+        serverData.setDistribution("Debian");
 		
 		formData.add("ip", serverData.getIp());
 		formData.add("user", serverData.getUser());
