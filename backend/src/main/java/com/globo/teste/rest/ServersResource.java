@@ -91,6 +91,7 @@ public class ServersResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response update(@PathParam("id") String id,
 						   @FormParam("user") String user,
+						   @FormParam("name") String name,
 						   @FormParam("password") String password,
 				           @FormParam("ip") String ip,
 				           @FormParam("distribution") String distribution) {
@@ -100,6 +101,7 @@ public class ServersResource {
 		toBeUpdated.setUser(user);
 		toBeUpdated.setPassword(password);
 		toBeUpdated.setDistribution(distribution);
+		toBeUpdated.setName(name);
 		
 		boolean updated = serverService.update(id, toBeUpdated);
 		GenericMessage response = new GenericMessage();
@@ -136,6 +138,7 @@ public class ServersResource {
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response add(@FormParam("user") String user,
+						@FormParam("name") String name,
 						@FormParam("password") String password,
 	                    @FormParam("ip") String ip,
 	                    @FormParam("distribution") String distribution) {
@@ -145,6 +148,7 @@ public class ServersResource {
 	    newServer.setUser(user);
 	    newServer.setPassword(password);
 	    newServer.setDistribution(distribution);
+	    newServer.setName(name);
 	    
 	    serverService.save(newServer);
 	    

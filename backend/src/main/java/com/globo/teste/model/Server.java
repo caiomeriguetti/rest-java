@@ -17,7 +17,14 @@ public class Server {
     public String user;
     public String password;
 	public String distribution;
+	public String name;
 	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
 	public String getPassword() {
 		return password;
 	}
@@ -58,6 +65,7 @@ public class Server {
         doc.put("ip", this.getIp());
         doc.put("distribution", this.getDistribution());
         doc.put("password", this.getPassword());
+        doc.put("name", this.getName());
         return doc;
     }
     
@@ -67,6 +75,7 @@ public class Server {
         s.setUser(doc.getString("user"));
         s.setPassword(doc.getString("password"));
         s.setDistribution(doc.getString("distribution"));
+        s.setName(doc.getString("name"));
         ObjectId id = doc.getObjectId("_id");
         if (id != null) {
         	s.setId(id.toHexString());

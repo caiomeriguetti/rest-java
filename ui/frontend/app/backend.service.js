@@ -20,6 +20,26 @@ System.register(['angular2/core'], function(exports_1) {
                 function BackendService() {
                     this.backendUrl = "http://localhost:8080/rest-java";
                 }
+                BackendService.prototype.saveServer = function (data, onLoad) {
+                    var url;
+                    if (data.id) {
+                        url = this.url("/api/servers/" + data.id);
+                    }
+                    else {
+                        url = this.url("/api/servers/");
+                    }
+                    $.ajax({
+                        url: url,
+                        method: "put",
+                        data: data,
+                        success: function (r) {
+                            if (onLoad) {
+                                onLoad(r);
+                            }
+                        }, error: function () {
+                        }
+                    });
+                };
                 BackendService.prototype.loadServers = function (onLoadServers) {
                     $.ajax({
                         url: this.url("/api/servers"),
@@ -28,7 +48,7 @@ System.register(['angular2/core'], function(exports_1) {
                             if (onLoadServers) {
                                 onLoadServers(r);
                             }
-                        }, error: function () {
+                        }, error: function (xhr, ajaxOptions, thrownError) {
                         }
                     });
                 };

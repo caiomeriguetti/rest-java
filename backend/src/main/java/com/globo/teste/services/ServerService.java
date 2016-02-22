@@ -95,7 +95,7 @@ public class ServerService {
 	public Server[] list() {
 		MongoCollection<Document> serversCollection = serversCollection();
 	    
-	    FindIterable<Document> servers = serversCollection.find();
+	    FindIterable<Document> servers = serversCollection.find().sort(new Document("_id", -1));
 	    
 	    return Server.fromIterable(servers);
 	}

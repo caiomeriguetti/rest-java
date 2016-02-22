@@ -20,10 +20,16 @@ System.register(['angular2/core', './backend.service'], function(exports_1) {
             }],
         execute: function() {
             ServerListComponent = (function () {
-                function ServerListComponent(backendService, zone) {
+                function ServerListComponent(backendService, zone, element) {
                     this.backendService = backendService;
                     this.zone = zone;
+                    this.element = element;
                     this.listServers = [];
+                    this.canAdd = false;
+                    this.adding = false;
+                    this.saving = false;
+                    this.infoMessage = null;
+                    this.serverData = null;
                     this.serverClicked = new core_1.EventEmitter();
                 }
                 ServerListComponent.prototype.ngOnInit = function () {
@@ -32,11 +38,65 @@ System.register(['angular2/core', './backend.service'], function(exports_1) {
                         self.listServers = servers;
                     });
                 };
+                ServerListComponent.prototype.filterList = function () {
+                    var element = $(this.element.nativeElement);
+                    var val = element.find(".search-input").val();
+                    element.find(".app-server").each(function (index, item) {
+                        var name = $(item).find(".ip").html();
+                        name += $(item).find(".name").html();
+                        if (name.toLowerCase().indexOf(val.toLowerCase()) >= 0) {
+                            $(item).show();
+                        }
+                        else {
+                            $(item).hide();
+                        }
+                    });
+                    if (element.find(".app-server:visible").length === 0 && val != "") {
+                        this.canAdd = true;
+                    }
+                    else {
+                        this.canAdd = false;
+                    }
+                };
+                ServerListComponent.prototype.showAddForm = function (ip) {
+                    this.serverData = { ip: ip };
+                    this.adding = true;
+                };
+                ServerListComponent.prototype.saveServer = function () {
+                    var self = this;
+                    self.saving = true;
+                    this.backendService.saveServer(this.serverData, function (result) {
+                        self.saving = false;
+                        self.adding = false;
+                        self.canAdd = false;
+                        if (result.id) {
+                            self.listServers.unshift(result);
+                        }
+                        else {
+                        }
+                    });
+                };
                 /**
                   Event Listeners
                 */
-                ServerListComponent.prototype.onClickServer = function (server) {
+                ServerListComponent.prototype.onClickAdd = function (ip) {
+                    this.showAddForm(ip);
+                };
+                ServerListComponent.prototype.onClickEditServer = function (server) {
+                    this.serverData = server;
+                    this.adding = this;
+                };
+                ServerListComponent.prototype.onClickInfoServer = function (server) {
                     this.serverClicked.emit(server);
+                };
+                ServerListComponent.prototype.onClickSaveServer = function () {
+                    this.saveServer();
+                };
+                ServerListComponent.prototype.onClickCancelSaving = function () {
+                    this.adding = false;
+                };
+                ServerListComponent.prototype.onSerachKeywordChange = function () {
+                    this.filterList();
                 };
                 __decorate([
                     core_1.Output(), 
@@ -50,7 +110,7 @@ System.register(['angular2/core', './backend.service'], function(exports_1) {
                         providers: [backend_service_1.BackendService],
                         templateUrl: 'templates/server-list.component.html'
                     }), 
-                    __metadata('design:paramtypes', [backend_service_1.BackendService, core_1.NgZone])
+                    __metadata('design:paramtypes', [backend_service_1.BackendService, core_1.NgZone, core_1.ElementRef])
                 ], ServerListComponent);
                 return ServerListComponent;
             })();

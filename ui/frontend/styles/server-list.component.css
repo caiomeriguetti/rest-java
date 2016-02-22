@@ -1,5 +1,17 @@
 .app-server:hover {
-  background: #13769C;
-  color: white;
+  background: #e5e5e5;
+  color: #333;
   cursor: pointer;
+}
+
+.app-server .name {
+	font-weight: bold;
+}
+
+.app-info {
+	margin-right: 10px;
+}
+
+.app-edit, .app-info {
+	float: right;
 }

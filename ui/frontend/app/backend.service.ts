@@ -7,6 +7,28 @@ export class BackendService {
 
 	private backendUrl: string = "http://localhost:8080/rest-java";
 
+	public saveServer(data, onLoad) {
+		var url;
+		if (data.id) {
+			url = this.url("/api/servers/"+data.id);
+		} else {
+			url = this.url("/api/servers/");
+		}
+
+		$.ajax({
+			url: url,
+			method: "put",
+			data: data,
+			success: function (r) {
+				if (onLoad) {
+					onLoad(r);
+				}
+			},error: function (){
+
+			}
+		});
+	}
+
 	public loadServers (onLoadServers) {
 		$.ajax({
 			url: this.url("/api/servers"),
@@ -15,8 +37,7 @@ export class BackendService {
 				if (onLoadServers) {
 					onLoadServers(r);
 				}
-			},error: function (){
-
+			},error: function (xhr, ajaxOptions, thrownError){
 			}
 		});
 	}
