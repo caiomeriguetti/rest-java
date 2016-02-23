@@ -4,6 +4,9 @@ backend/.classpath
 backend/.project
 backend/test-output
 
-ui/frontend/npm-debug.log
-ui/node_modules
-ui/frontend/node_modules
+ui/target
+ui/.settings
+ui/src/main/webapp/npm-debug.log
+ui/src/main/webapp/node_modules
+ui/.project
+ui/.classpath
