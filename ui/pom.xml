@@ -7,6 +7,34 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>servers-app</name>
 	<url>http://maven.apache.org</url>
+	
+	<build>
+        <finalName>servers-ui</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.5.1</version>
+                <inherited>true</inherited>
+                <executions>
+	                <execution>
+	                    <id>default-testCompile</id>
+	                    <phase>test-compile</phase>
+	                    <goals>
+	                        <goal>testCompile</goal>
+	                    </goals>
+	                    <configuration>
+	                        <skip>true</skip>
+	                    </configuration>
+	                </execution>
+	            </executions>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
  
 	<properties>
 		<spring.version>4.0.1.RELEASE</spring.version>
@@ -38,9 +66,4 @@
 		</dependency>
  
 	</dependencies>
- 
- 
-	<build>
-		<finalName>HelloWorld</finalName>
-	</build>
 </project>
