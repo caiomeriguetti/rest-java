@@ -15,10 +15,13 @@ export class ServerListComponent implements OnInit {
 
   listServers = [];
   canAdd = false;
-  adding = false;
   saving = false;
   infoMessage = null;
+  infoMessageModal = null;
   serverData = null;
+  validationErrors = {
+    ip: false, user: false, password: false
+  };
 
   @Output() serverClicked: EventEmitter<any> = new EventEmitter();
 
@@ -58,22 +61,134 @@ export class ServerListComponent implements OnInit {
   showAddForm (ip) {
     this.serverData = {ip: ip};
     this.adding = true;
+    this.showEditModal();
+  }
+
+  gotoServer (id) {
+
+    var serverElement = $(this.element.nativeElement).find("[data-serverid=\""+id+"\"]");
+    $("html, body").animate({
+      scrollTop: serverElement.offset().top
+    });
+  }
+
+  validateServerInfo () {
+    this.validationErrors = {
+      ip: "",
+      user: "",
+      password: ""
+    };
+    var hasError = false;
+    if (!this.serverData.ip) {
+      this.validationErrors.ip = "Please fill the ip";
+      hasError = true;
+    }
+
+    if (!this.serverData.user) {
+      this.validationErrors.user = "Please fill the username";
+      hasError = true;
+    }
+
+    if (!this.serverData.password) {
+      this.validationErrors.password = "Please fill the password";
+      hasError = true;
+    }
+
+    console.log(this.serverData);
+
+    if (hasError) {
+      var msg = [];
+      for (var i in this.validationErrors) {
+        
+        if (!this.validationErrors[i]) continue;
+
+        msg.push(this.validationErrors[i]);
+      }
+      console.log(msg);
+      this.infoMessageModal = {
+        text: msg.join("<br/>"),
+        type: "danger"
+      };
+    }
+
+    return hasError;
   }
 
   saveServer () {
     var self = this;
+
+    var hasError = this.validateServerInfo();
+    if (hasError) {
+      return;
+    }
+
     self.saving = true;
     this.backendService.saveServer(this.serverData, function (result) {
       self.saving = false;
-      self.adding = false;
       self.canAdd = false;
 
-      if (result.id) {
-        self.listServers.unshift(result);
+      if (result.id || result.code===1) {
+        self.infoMessageModal = {
+          text: "Server info saved.",
+          type: "success"
+        };
+        if (result.id) {
+          self.listServers.unshift(result);
+        }
       } else {
-
+        self.infoMessageModal = {
+          text: "Problem ocurred.",
+          type: "danger"
+        };
       }
+
+      self.gotoServer(self.serverData.id);
+
+      setTimeout(function () {
+        self.infoMessageModal = null
+      }, 5000);
     });
+  }
+
+  removeServerFromList (server) {
+    $(this.element.nativeElement).find("[data-serverid=\""+server.id+"\"]").remove();
+  }
+
+  delServer(server) {
+    var self = this;
+    server.deleting = true;
+    this.backendService.delServer(server.id, function (result) {
+      server.deleting = false;
+     
+      if (result.code === 1) {
+        self.infoMessage = {
+          text: "Server deleted.",
+          type: "success"
+        };
+        
+        self.removeServerFromList(server);
+
+      } else {
+        self.infoMessage = {
+          text: "Problem ocurred.",
+          type: "danger"
+        };
+      }
+
+      setTimeout(function () {
+        self.infoMessage = null
+      }, 5000);
+
+    });
+  }
+
+  hideEditModal() {
+    $(this.element.nativeElement).find("#edit-server").modal("hide");
+  }
+
+  showEditModal() {
+    this.infoMessageModal = null;
+    $(this.element.nativeElement).find("#edit-server").modal("show");
   }
 
   /**
@@ -85,7 +200,7 @@ export class ServerListComponent implements OnInit {
 
   onClickEditServer (server) {
     this.serverData = server;
-    this.adding = this;
+    this.showEditModal();
   }
 
   onClickInfoServer (server) {
@@ -96,8 +211,14 @@ export class ServerListComponent implements OnInit {
     this.saveServer();
   }
 
+  onClickDel (server) {
+    if (confirm("Are you sure you want to delete this server?")) {
+      this.delServer(server);
+    }
+  }
+
   onClickCancelSaving () {
-    this.adding = false;
+    this.hideEditModal();
   }
 
   onSerachKeywordChange () {

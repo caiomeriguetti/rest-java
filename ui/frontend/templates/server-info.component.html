@@ -23,7 +23,7 @@
 	<div class="row">
 		<div class="col-md-12">
 			<ul class="list-group app-packagelist"> 
-			  <li *ngFor="#package of packages" [ngClass]="{'list-group-item': true,  'app-package': true, 'loading-package': package.loading}">
+			  <li *ngFor="#package of packages" [ngClass]="{'list-group-item': true,  'app-package': true, 'loading-package': package.loading}" [attr.data-packname]="package.name">
 			  	<span class="name">{{package.name}}</span>
 			  	<span class="glyphicon glyphicon-remove app-delpackage" (click)="onClickDel(package.name)" *ngIf="!package.loading"></span>
 			  	<img src="img/loader.gif" class="loader" *ngIf="package.loading"/>

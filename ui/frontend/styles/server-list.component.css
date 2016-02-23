@@ -4,14 +4,42 @@
   cursor: pointer;
 }
 
+#infoMessage {
+	position: fixed;
+	width: 100%;
+	top:0; left:0;
+	height: auto;
+	border-radius: 0;
+	z-index: 10;
+}
+
+
+input.error {
+	border: 1px solid red;
+}
+
 .app-server .name {
 	font-weight: bold;
 }
 
-.app-info {
+.app-server.deleting .loader {
+	display: block;
+}
+
+.app-server.deleting .app-delserver {
+	display: none;
+}
+
+.app-server .loader {
+	display: none;
+}
+
+.app-info, .app-edit {
 	margin-right: 10px;
 }
 
-.app-edit, .app-info {
+
+
+.app-edit, .app-info, .app-delserver, .app-server .loader {
 	float: right;
 }

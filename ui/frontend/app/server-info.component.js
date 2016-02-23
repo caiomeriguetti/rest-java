@@ -54,16 +54,13 @@ System.register(['angular2/core', './backend.service'], function(exports_1) {
                     result[0].loading = loading;
                 };
                 ServerInfoComponent.prototype.removePackage = function (name) {
-                    var result = $.grep(this.packages, function (e) {
-                        return e.name != name;
-                    });
-                    this.packages = result;
+                    $(this.element.nativeElement).find("[data-packname=\"" + name + "\"]").remove();
                 };
                 ServerInfoComponent.prototype.delPackage = function (packageName) {
                     var self = this;
                     var confirmed = confirm("Are you sure?");
-                    self.setLoadingPackage(packageName, true);
                     if (confirmed) {
+                        self.setLoadingPackage(packageName, true);
                         this.backendService.delPackage(this._server.id, packageName, function (result) {
                             self.setLoadingPackage(packageName, true);
                             if (result.code === 1) {

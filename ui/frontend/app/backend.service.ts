@@ -29,6 +29,20 @@ export class BackendService {
 		});
 	}
 
+	public delServer(id, onLoad) {
+		$.ajax({
+			url: this.url("/api/servers/"+id),
+			method: "delete",
+			success: function (r) {
+				if (onLoad) {
+					onLoad(r);
+				}
+			},error: function (){
+
+			}
+		});
+	}
+
 	public loadServers (onLoadServers) {
 		$.ajax({
 			url: this.url("/api/servers"),

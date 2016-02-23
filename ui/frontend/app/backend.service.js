@@ -40,6 +40,18 @@ System.register(['angular2/core'], function(exports_1) {
                         }
                     });
                 };
+                BackendService.prototype.delServer = function (id, onLoad) {
+                    $.ajax({
+                        url: this.url("/api/servers/" + id),
+                        method: "delete",
+                        success: function (r) {
+                            if (onLoad) {
+                                onLoad(r);
+                            }
+                        }, error: function () {
+                        }
+                    });
+                };
                 BackendService.prototype.loadServers = function (onLoadServers) {
                     $.ajax({
                         url: this.url("/api/servers"),

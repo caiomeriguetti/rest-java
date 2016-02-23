@@ -1,9 +1,48 @@
 <div class="container">
-	<div class="row" *ngIf="infoMessage != null">
-		<div class="col-md-12">
-		  <div class="alert alert-{{infoMessage.type}}" role="alert" [innerHtml]="infoMessage.text"></div>
-		</div>
-	</div>
+		  <div id="infoMessage" *ngIf="infoMessage != null" class="alert alert-{{infoMessage.type}}" role="alert" [innerHtml]="infoMessage.text"></div>
+
+	<div id="edit-server" class="modal fade" tabindex="-1" role="dialog">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title">Server Info:</h4>
+	      </div>
+	      <div class="modal-body">
+	      	<div class="row" *ngIf="infoMessageModal != null">
+						<div class="col-md-12">
+						  <div class="alert alert-{{infoMessageModal.type}}" role="alert" [innerHtml]="infoMessageModal.text"></div>
+						</div>
+					</div>
+	        <div class="row" *ngIf="serverData != null">
+						<div class="col-md-12">
+				
+							  	<input type="text" [ngClass]="{'form-control': true}" placeholder="Name" [(ngModel)]="serverData.name">
+							    <br/>
+							    <input type="text" [ngClass]="{'form-control': true, error:validationErrors.ip}" class="form-control" placeholder="IP" [(ngModel)]="serverData.ip">
+							    <br/>
+									<input type="text" [ngClass]="{'form-control': true, error:validationErrors.user}" class="form-control" placeholder="Username" [(ngModel)]="serverData.user">
+									<br/>
+									<input type="text" [ngClass]="{'form-control': true, error:validationErrors.password}" class="form-control" placeholder="Password" [(ngModel)]="serverData.password">
+									<br/>
+									<div class="input-group">
+									  <span class="input-group-addon" id="basic-addon1">Distribution</span>
+									  <select class="form-control" placeholder="Distribution" [(ngModel)]="serverData.distribution">
+											<option>Ubuntu</option>
+										</select>
+									</div>
+							
+						</div>
+					</div>
+	      </div>
+	      <div class="modal-footer">
+	        <button [disabled]="saving" class="btn btn-success" type="button" (click)="onClickSaveServer()" [innerHtml]="(saving) ? 'Saving' : 'Save'"></button>
+			  	<button [disabled]="saving" class="btn btn-default" type="button" (click)="onClickCancelSaving()">Cancel</button>
+	      </div>
+	    </div><!-- /.modal-content -->
+	  </div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+
 	<div class="row">
 		<div class="col-md-12">
 			<div class="input-group" style="padding-bottom: 10px">
@@ -17,41 +56,14 @@
 			</div>
 		</div>
 	</div>
-	<div class="row" *ngIf="adding">
-		<div class="col-md-12">
-			<div class="panel panel-default">
-				<div class="panel-heading">Please, fill the server info:</div>
-			  <div class="panel-body">
-			  	<input type="text" class="form-control" placeholder="Name" [(ngModel)]="serverData.name">
-			    <br/>
-			    <input type="text" class="form-control" placeholder="IP" [(ngModel)]="serverData.ip">
-			    <br/>
-					<input type="text" class="form-control" placeholder="Username" [(ngModel)]="serverData.user">
-					<br/>
-					<input type="text" class="form-control" placeholder="Password" [(ngModel)]="serverData.password">
-					<br/>
-					<div class="input-group">
-					  <span class="input-group-addon" id="basic-addon1">Distribution</span>
-					  <select class="form-control" placeholder="Distribution" [(ngModel)]="serverData.distribution">
-							<option>Ubuntu</option>
-						</select>
-					</div>
-					
-			  </div>
-			  <div class="panel-footer">
-			  	<button [disabled]="saving" class="btn btn-success" type="button" (click)="onClickSaveServer()" [innerHtml]="(saving) ? 'Saving' : 'Save'"></button>
-			  	<button [disabled]="saving" class="btn btn-default" type="button" (click)="onClickCancelSaving()">Cancel</button>
-				</div>
-			</div>
-			
-		</div>
-	</div>
 	<ul class="list-group"> 
-	  <li *ngFor="#server of listServers" class="list-group-item app-server">
+	  <li *ngFor="#server of listServers" [ngClass]="{'list-group-item':true, 'app-server':true, 'deleting': server.deleting}" [attr.data-serverid]="server.id">
 	  	<span class="name" *ngIf="server.name">{{server.name}}:</span>
 	  	<span class="ip">{{server.ip}}</span>
-	  	<span class="glyphicon glyphicon-edit app-edit" aria-hidden="true" (click)="onClickEditServer(server)"></span>
-	  	<span class="glyphicon glyphicon-cog app-info" aria-hidden="true" (click)="onClickInfoServer(server)"></span>
+	  	<img src="img/loader.gif" class="loader"/>
+	  	<span title="Delete Server" class="glyphicon glyphicon-remove app-delserver" (click)="onClickDel(server)"></span>
+	  	<span title="Edit Server Info" class="glyphicon glyphicon-edit app-edit" aria-hidden="true" (click)="onClickEditServer(server)"></span>
+	  	<span title="Install Packages" class="glyphicon glyphicon-cog app-info" aria-hidden="true" (click)="onClickInfoServer(server)"></span>
 	  </li>
 	</ul>
 </div>
