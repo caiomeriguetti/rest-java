@@ -61,7 +61,7 @@ export class ServerInfoComponent implements OnInit {
     var confirmed = confirm("Are you sure?");
     if (confirmed) {
       self.setLoadingPackage(packageName, true);
-      this.backendService.delPackage(this._server.id, packageName function (result) {
+      this.backendService.delPackage(this._server.id, packageName, function (result) {
         self.setLoadingPackage(packageName, true);
         if (result.code === 1) {
           self.infoMessage = {

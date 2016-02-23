@@ -20,7 +20,7 @@ export class ServerListComponent implements OnInit {
   infoMessageModal = null;
   serverData = null;
   validationErrors = {
-    ip: false, user: false, password: false
+    ip: null, user: null, password: null
   };
 
   @Output() serverClicked: EventEmitter<any> = new EventEmitter();
@@ -60,15 +60,14 @@ export class ServerListComponent implements OnInit {
 
   showAddForm (ip) {
     this.serverData = {ip: ip};
-    this.adding = true;
     this.showEditModal();
   }
 
   validateServerInfo () {
     this.validationErrors = {
-      ip: "",
-      user: "",
-      password: ""
+      ip: null,
+      user: null,
+      password: null
     };
     var hasError = false;
     if (!this.serverData.ip) {
@@ -86,8 +85,6 @@ export class ServerListComponent implements OnInit {
       hasError = true;
     }
 
-    console.log(this.serverData);
-
     if (hasError) {
       var msg = [];
       for (var i in this.validationErrors) {
@@ -96,7 +93,7 @@ export class ServerListComponent implements OnInit {
 
         msg.push(this.validationErrors[i]);
       }
-      console.log(msg);
+      
       this.infoMessageModal = {
         text: msg.join("<br/>"),
         type: "danger"

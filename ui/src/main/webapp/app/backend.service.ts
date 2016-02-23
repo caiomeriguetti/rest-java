@@ -5,7 +5,7 @@ declare var $:any;
 @Injectable()
 export class BackendService {
 
-	private backendUrl: string = "http://localhost:8080/rest-java";
+	private backendUrl: string = CONTEXT_PATH;
 
 	public saveServer(data, onLoad) {
 		var url;

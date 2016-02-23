@@ -18,7 +18,7 @@ System.register(['angular2/core'], function(exports_1) {
         execute: function() {
             BackendService = (function () {
                 function BackendService() {
-                    this.backendUrl = "http://localhost:8080/rest-java";
+                    this.backendUrl = "http://localhost:8080/";
                 }
                 BackendService.prototype.saveServer = function (data, onLoad) {
                     var url;

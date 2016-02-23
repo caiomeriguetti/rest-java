@@ -31,7 +31,7 @@ System.register(['angular2/core', './backend.service'], function(exports_1) {
                     this.infoMessageModal = null;
                     this.serverData = null;
                     this.validationErrors = {
-                        ip: false, user: false, password: false
+                        ip: null, user: null, password: null
                     };
                     this.serverClicked = new core_1.EventEmitter();
                 }
@@ -63,14 +63,13 @@ System.register(['angular2/core', './backend.service'], function(exports_1) {
                 };
                 ServerListComponent.prototype.showAddForm = function (ip) {
                     this.serverData = { ip: ip };
-                    this.adding = true;
                     this.showEditModal();
                 };
                 ServerListComponent.prototype.validateServerInfo = function () {
                     this.validationErrors = {
-                        ip: "",
-                        user: "",
-                        password: ""
+                        ip: null,
+                        user: null,
+                        password: null
                     };
                     var hasError = false;
                     if (!this.serverData.ip) {
@@ -85,7 +84,6 @@ System.register(['angular2/core', './backend.service'], function(exports_1) {
                         this.validationErrors.password = "Please fill the password";
                         hasError = true;
                     }
-                    console.log(this.serverData);
                     if (hasError) {
                         var msg = [];
                         for (var i in this.validationErrors) {
@@ -93,7 +91,6 @@ System.register(['angular2/core', './backend.service'], function(exports_1) {
                                 continue;
                             msg.push(this.validationErrors[i]);
                         }
-                        console.log(msg);
                         this.infoMessageModal = {
                             text: msg.join("<br/>"),
                             type: "danger"

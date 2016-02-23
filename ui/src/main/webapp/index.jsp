@@ -18,6 +18,7 @@
 
     <!-- 2. Configure SystemJS -->
     <script>
+      var CONTEXT_PATH = "<%=request.getContextPath()%>";
       System.config({
         packages: {
           app: {
