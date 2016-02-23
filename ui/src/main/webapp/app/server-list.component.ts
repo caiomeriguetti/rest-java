@@ -64,14 +64,6 @@ export class ServerListComponent implements OnInit {
     this.showEditModal();
   }
 
-  gotoServer (id) {
-
-    var serverElement = $(this.element.nativeElement).find("[data-serverid=\""+id+"\"]");
-    $("html, body").animate({
-      scrollTop: serverElement.offset().top
-    });
-  }
-
   validateServerInfo () {
     this.validationErrors = {
       ip: "",
@@ -141,8 +133,6 @@ export class ServerListComponent implements OnInit {
           type: "danger"
         };
       }
-
-      self.gotoServer(self.serverData.id);
 
       setTimeout(function () {
         self.infoMessageModal = null

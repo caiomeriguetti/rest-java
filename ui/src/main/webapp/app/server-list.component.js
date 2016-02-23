@@ -66,12 +66,6 @@ System.register(['angular2/core', './backend.service'], function(exports_1) {
                     this.adding = true;
                     this.showEditModal();
                 };
-                ServerListComponent.prototype.gotoServer = function (id) {
-                    var serverElement = $(this.element.nativeElement).find("[data-serverid=\"" + id + "\"]");
-                    $("html, body").animate({
-                        scrollTop: serverElement.offset().top
-                    });
-                };
                 ServerListComponent.prototype.validateServerInfo = function () {
                     this.validationErrors = {
                         ip: "",
@@ -132,7 +126,6 @@ System.register(['angular2/core', './backend.service'], function(exports_1) {
                                 type: "danger"
                             };
                         }
-                        self.gotoServer(self.serverData.id);
                         setTimeout(function () {
                             self.infoMessageModal = null;
                         }, 5000);

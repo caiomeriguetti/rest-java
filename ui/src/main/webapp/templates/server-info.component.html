@@ -1,10 +1,8 @@
 
 <div class="container">
-	<div class="row" *ngIf="infoMessage != null">
-		<div class="col-md-12">
-		  <div class="alert alert-{{infoMessage.type}}" role="alert" [innerHtml]="infoMessage.text"></div>
-		</div>
-	</div>
+
+  <div id="infoAlert" *ngIf="infoMessage != null" class="alert alert-{{infoMessage.type}}" role="alert" [innerHtml]="infoMessage.text"></div>
+
 	<h1 class="title">{{server.ip}}</h1>
 	<div class="row">
 		<div class="col-md-12">
