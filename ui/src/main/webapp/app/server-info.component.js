@@ -136,10 +136,17 @@ System.register(['angular2/core', './backend.service'], function(exports_1, cont
                 };
                 ServerInfoComponent.prototype.filterList = function () {
                     var element = $(this.element.nativeElement);
-                    var val = element.find(".search-input").val();
+                    var val = $.trim(element.find(".search-input").val());
+                    var vals = val.split(" ");
                     element.find(".app-package").each(function (index, item) {
                         var name = $(item).find(".name").html();
-                        if (name.toLowerCase().indexOf(val.toLowerCase()) >= 0) {
+                        var hide = true;
+                        for (var i = 0; i < vals.length; i++) {
+                            if (name.toLowerCase().indexOf(vals[i].toLowerCase()) >= 0 && vals[i] != "" && vals[i] != null) {
+                                hide = false;
+                            }
+                        }
+                        if (!hide || val === "") {
                             $(item).show();
                         }
                         else {
