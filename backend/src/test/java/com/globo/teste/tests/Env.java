@@ -3,7 +3,7 @@ package com.globo.teste.tests;
 public class Env {
     
     public static String getBackendUrl() {
-        return getEnvVar("SERVERSAPP_BACKEND_URL", "http://localhost:8181/rest-java/api");
+        return getEnvVar("SERVERSAPP_BACKEND_URL", "http://localhost:8282/api");
     }
     
     public static String getTestServerIp() {
