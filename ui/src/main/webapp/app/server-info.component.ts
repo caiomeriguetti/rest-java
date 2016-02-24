@@ -29,6 +29,7 @@ export class ServerInfoComponent implements OnInit {
   infoMessage = null;
   loading = false;
   installing = false;
+  deleting = false;
   packagesDict = {};
 
   constructor (private backendService: BackendService,
@@ -56,11 +57,16 @@ export class ServerInfoComponent implements OnInit {
       return e.name == name;
     });
 
-    result[0].loading = loading;
+    if (result[0]) {
+      result[0].loading = loading;
+    }
   }
 
   removePackage (name) {
-    $(this.element.nativeElement).find("[data-packname=\""+name+"\"]").remove();
+    var names = name.split(" ");
+    for (var i=0; i<names.length; i++) {
+      $(this.element.nativeElement).find("[data-packname=\""+names[i]+"\"]").remove();
+    }
   }
 
   delPackage (packageName) {
@@ -68,8 +74,12 @@ export class ServerInfoComponent implements OnInit {
     var confirmed = confirm("Are you sure?");
     if (confirmed) {
       self.setLoadingPackage(packageName, true);
+      self.deleting = true;
+      self.loading = true;
       this.backendService.delPackage(this._server.id, packageName, function (ok, result) {
-        self.setLoadingPackage(packageName, true);
+        self.setLoadingPackage(packageName, false);
+        self.deleting = false;
+        self.loading = false;
         if (ok) {
           self.infoMessage = {
             text: "The package "+packageName+" was deleted.",
