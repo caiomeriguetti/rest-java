@@ -9,6 +9,8 @@ import org.bson.types.ObjectId;
 import com.globo.teste.db.DB;
 import com.globo.teste.model.Server;
 import com.globo.teste.model.ServerPackage;
+import com.globo.teste.ssh.CommandBuilder;
+import com.globo.teste.ssh.CommandBuilderFactory;
 import com.globo.teste.ssh.RemoteCommand;
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.FindIterable;
@@ -23,8 +25,9 @@ public class ServerService {
 	 * */
 	public boolean uninstallPackage(String id, String packageName) {
 		Server server = getServerById(id);
+		CommandBuilder builder = CommandBuilderFactory.getBuilder(server);
 		
-		RemoteCommand cmd = new RemoteCommand("apt-get -y remove "+packageName);
+		RemoteCommand cmd = new RemoteCommand(builder.uninstallPackageCommand(packageName));
 		cmd.setSudo(true);
 	    cmd.execute(server);
 		
@@ -35,7 +38,8 @@ public class ServerService {
 	 * Check if a package is installed on a server
 	 * */
 	public boolean hasPackage(Server server, String packageName) {
-		RemoteCommand cmd = new RemoteCommand("dpkg -s "+packageName);
+		CommandBuilder builder = CommandBuilderFactory.getBuilder(server);
+		RemoteCommand cmd = new RemoteCommand(builder.isPackageInstalledCommand(packageName));
 	    String result = cmd.execute(server);
 
 		return result.indexOf("Status: install ok installed") >= 0;
@@ -50,8 +54,8 @@ public class ServerService {
 	 * */
 	public boolean installPackage(String id, String packageName) {
 		Server server = getServerById(id);
-		
-		RemoteCommand cmd = new RemoteCommand("apt-get -y install "+packageName);
+		CommandBuilder builder = CommandBuilderFactory.getBuilder(server);
+		RemoteCommand cmd = new RemoteCommand(builder.installPackageCommand(packageName));
 		cmd.setSudo(true);
 	    cmd.execute(server);
 		
@@ -67,8 +71,8 @@ public class ServerService {
 	 * */
 	public ServerPackage[] getPackages (String id) {
 		Server server = getServerById(id);
-	    
-	    RemoteCommand cmd = new RemoteCommand("dpkg --get-selections");
+		CommandBuilder builder = CommandBuilderFactory.getBuilder(server);
+	    RemoteCommand cmd = new RemoteCommand(builder.listPackagesCommand());
 	    String result = cmd.execute(server);
 	    
 	    List<ServerPackage> packages = null;
