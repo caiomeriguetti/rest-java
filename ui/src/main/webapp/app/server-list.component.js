@@ -104,11 +104,16 @@ System.register(['angular2/core', './backend.service'], function(exports_1) {
                     if (hasError) {
                         return;
                     }
+                    var hideModal = function () {
+                        setTimeout(function () {
+                            self.infoMessageModal = null;
+                        }, 5000);
+                    };
                     self.saving = true;
-                    this.backendService.saveServer(this.serverData, function (result) {
+                    this.backendService.saveServer(this.serverData, function (ok, result) {
                         self.saving = false;
                         self.canAdd = false;
-                        if (result.id || result.code === 1) {
+                        if (ok && (result.id || result.code === 1)) {
                             self.infoMessageModal = {
                                 text: "Server info saved.",
                                 type: "success"
@@ -123,9 +128,7 @@ System.register(['angular2/core', './backend.service'], function(exports_1) {
                                 type: "danger"
                             };
                         }
-                        setTimeout(function () {
-                            self.infoMessageModal = null;
-                        }, 5000);
+                        hideModal();
                     });
                 };
                 ServerListComponent.prototype.removeServerFromList = function (server) {

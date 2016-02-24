@@ -86,7 +86,7 @@ public class ServersResource {
 		return Response.status(200).entity(response).build();
 	}
 	
-	@PUT
+	@POST
 	@Path("{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response update(@PathParam("id") String id,
@@ -135,7 +135,7 @@ public class ServersResource {
 		return Response.status(200).entity(servers).build();
 	}
 	
-	@PUT
+	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response add(@FormParam("user") String user,
 						@FormParam("name") String name,

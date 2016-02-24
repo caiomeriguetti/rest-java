@@ -18,25 +18,24 @@ System.register(['angular2/core'], function(exports_1) {
         execute: function() {
             BackendService = (function () {
                 function BackendService() {
-                    this.backendUrl = "http://localhost:8080/";
+                    this.backendUrl = CONTEXT_PATH;
                 }
                 BackendService.prototype.saveServer = function (data, onLoad) {
-                    var url;
+                    var url = this.url("/api/servers");
                     if (data.id) {
-                        url = this.url("/api/servers/" + data.id);
-                    }
-                    else {
-                        url = this.url("/api/servers/");
+                        url += "/" + data.id;
                     }
                     $.ajax({
                         url: url,
-                        method: "put",
+                        method: "post",
                         data: data,
                         success: function (r) {
                             if (onLoad) {
-                                onLoad(r);
+                                onLoad(true, r);
                             }
                         }, error: function () {
+                            if (onLoad)
+                                onLoad(false);
                         }
                     });
                 };

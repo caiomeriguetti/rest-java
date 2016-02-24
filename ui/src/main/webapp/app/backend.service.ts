@@ -1,6 +1,7 @@
 import {Injectable} from 'angular2/core';
 
 declare var $:any;
+declare var CONTEXT_PATH:any;
 
 @Injectable()
 export class BackendService {
@@ -8,23 +9,21 @@ export class BackendService {
 	private backendUrl: string = CONTEXT_PATH;
 
 	public saveServer(data, onLoad) {
-		var url;
+		var url = this.url("/api/servers");
 		if (data.id) {
-			url = this.url("/api/servers/"+data.id);
-		} else {
-			url = this.url("/api/servers/");
+			url += "/"+data.id;
 		}
 
 		$.ajax({
 			url: url,
-			method: "put",
+			method: "post",
 			data: data,
 			success: function (r) {
 				if (onLoad) {
-					onLoad(r);
+					onLoad(true, r);
 				}
 			},error: function (){
-
+				if (onLoad) onLoad(false);
 			}
 		});
 	}

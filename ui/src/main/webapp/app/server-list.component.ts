@@ -93,7 +93,7 @@ export class ServerListComponent implements OnInit {
 
         msg.push(this.validationErrors[i]);
       }
-      
+
       this.infoMessageModal = {
         text: msg.join("<br/>"),
         type: "danger"
@@ -111,12 +111,18 @@ export class ServerListComponent implements OnInit {
       return;
     }
 
+    var hideModal = function () {
+      setTimeout(function () {
+        self.infoMessageModal = null
+      }, 5000);
+    };
+
     self.saving = true;
-    this.backendService.saveServer(this.serverData, function (result) {
+    this.backendService.saveServer(this.serverData, function (ok, result) {
       self.saving = false;
       self.canAdd = false;
 
-      if (result.id || result.code===1) {
+      if (ok && (result.id || result.code===1)) {
         self.infoMessageModal = {
           text: "Server info saved.",
           type: "success"
@@ -131,9 +137,7 @@ export class ServerListComponent implements OnInit {
         };
       }
 
-      setTimeout(function () {
-        self.infoMessageModal = null
-      }, 5000);
+      hideModal();
     });
   }
 
