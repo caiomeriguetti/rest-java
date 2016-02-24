@@ -1,4 +1,6 @@
-System.register(['angular2/core', './backend.service'], function(exports_1) {
+System.register(['angular2/core', './backend.service'], function(exports_1, context_1) {
+    "use strict";
+    var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
         var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
         if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -29,6 +31,7 @@ System.register(['angular2/core', './backend.service'], function(exports_1) {
                     this.infoMessage = null;
                     this.loading = false;
                     this.installing = false;
+                    this.packagesDict = {};
                 }
                 Object.defineProperty(ServerInfoComponent.prototype, "server", {
                     get: function () {
@@ -45,7 +48,13 @@ System.register(['angular2/core', './backend.service'], function(exports_1) {
                 ServerInfoComponent.prototype.ngOnInit = function () {
                 };
                 ServerInfoComponent.prototype.addPackage = function (name) {
-                    this.packages.push({ name: name });
+                    var names = name.split(" ");
+                    for (var i = 0; i < names.length; i++) {
+                        if (!this.packagesDict[names[i]]) {
+                            this.packages.push({ name: names[i] });
+                            this.packagesDict[names[i]] = true;
+                        }
+                    }
                 };
                 ServerInfoComponent.prototype.setLoadingPackage = function (name, loading) {
                     var result = $.grep(this.packages, function (e) {
@@ -88,6 +97,9 @@ System.register(['angular2/core', './backend.service'], function(exports_1) {
                     var self = this;
                     self.loading = true;
                     this.backendService.loadPackages(this._server.id, function (packages) {
+                        for (var i = 0; i < packages.length; i++) {
+                            self.packagesDict[packages[i].name] = true;
+                        }
                         self.packages = packages;
                         self.filterList();
                         self.loading = false;
@@ -166,7 +178,7 @@ System.register(['angular2/core', './backend.service'], function(exports_1) {
                     __metadata('design:paramtypes', [backend_service_1.BackendService, core_1.NgZone, core_1.ElementRef])
                 ], ServerInfoComponent);
                 return ServerInfoComponent;
-            })();
+            }());
             exports_1("ServerInfoComponent", ServerInfoComponent);
         }
     }

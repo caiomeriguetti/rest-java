@@ -12,7 +12,7 @@ declare var $:any;
 })
 
 export class ServerInfoComponent implements OnInit {
-  
+
   private _server;
 
   @Input() set server(val) {
@@ -29,24 +29,31 @@ export class ServerInfoComponent implements OnInit {
   infoMessage = null;
   loading = false;
   installing = false;
+  packagesDict = {};
 
-  constructor (private backendService: BackendService, 
+  constructor (private backendService: BackendService,
                private zone: NgZone,
                private element: ElementRef) {
-    
+
   }
 
   ngOnInit () {
-    
+
   }
 
   addPackage (name) {
-    this.packages.push({name: name});
+    var names = name.split(" ");
+    for (var i=0; i < names.length; i++) {
+      if (!this.packagesDict[names[i]]) {
+        this.packages.push({name: names[i]});
+        this.packagesDict[names[i]] = true;
+      }
+    }
   }
 
   setLoadingPackage(name, loading) {
-    var result = $.grep(this.packages, function(e){ 
-      return e.name == name; 
+    var result = $.grep(this.packages, function(e){
+      return e.name == name;
     });
 
     result[0].loading = loading;
@@ -68,7 +75,7 @@ export class ServerInfoComponent implements OnInit {
             text: "The package "+packageName+" was deleted.",
             type: "success"
           };
-          self.removePackage(packageName); 
+          self.removePackage(packageName);
           self.filterList();
           self.canInstall = true;
         } else {
@@ -89,6 +96,11 @@ export class ServerInfoComponent implements OnInit {
     var self = this;
     self.loading = true;
     this.backendService.loadPackages(this._server.id, function (packages) {
+
+      for (var i=0; i < packages.length; i++) {
+        self.packagesDict[packages[i].name] = true;
+      }
+
       self.packages = packages;
       self.filterList();
       self.loading = false;
@@ -155,5 +167,5 @@ export class ServerInfoComponent implements OnInit {
   onSerachKeywordChange () {
     this.filterList();
   }
-  
+
 }
