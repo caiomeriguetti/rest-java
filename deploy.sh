@@ -1,14 +1,30 @@
-#!/bin/sh
+#!/bin/bash
+
+#Distributor ID:	Ubuntu
+#Description:	Ubuntu 14.04.2 LTS
+#Release:	14.04
+#Codename:	trusty
+
+function appdir {
+  pwd
+}
+
+appPath=$(appdir)
+tomcatAppsDir="/var/lib/tomcat7"
 
 #backend
-cd /home/caiomeriguetti/javasites/rest-java/backend
-mvn clean package
-cp -a target/rest-java /var/lib/tomcat7/servers-backend/ROOT
+cd $appPath/backend
+sudo mvn clean package
+sudo mkdir -p $tomcatAppsDir/servers-backend/
+sudo chmod 777 -R $tomcatAppsDir/servers-backend/
+sudo cp -a target/rest-java.war $tomcatAppsDir/servers-backend/ROOT.war
 
 #frontend
-cd /home/caiomeriguetti/javasites/rest-java/ui
-mvn clean package
-cp -a target/servers-ui /var/lib/tomcat7/servers-ui/ROOT
-
-
-
+cd $appPath/ui/src/main/webapp
+sudo npm install
+cd $appPath/ui
+sudo mvn clean package
+sudo mkdir -p $tomcatAppsDir/servers-ui/
+sudo chmod 777 -R $tomcatAppsDir/servers-ui/
+sudo cp -a target/servers-ui.war $tomcatAppsDir/servers-ui/ROOT.war
+sudo service tomcat7 restart
