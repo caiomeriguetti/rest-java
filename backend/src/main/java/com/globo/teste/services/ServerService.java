@@ -21,14 +21,14 @@ public class ServerService {
 	/**
 	 * Uninstall a package on a server
 	 * */
-	public String uninstallPackage(String id, String packageName) {
+	public boolean uninstallPackage(String id, String packageName) {
 		Server server = getServerById(id);
 		
 		RemoteCommand cmd = new RemoteCommand("apt-get -y remove "+packageName);
 		cmd.setSudo(true);
-	    String result = cmd.execute(server);
+	    cmd.execute(server);
 		
-		return result;
+		return !this.hasPackage(server, packageName);
 	}
 	
 	/**
@@ -48,14 +48,18 @@ public class ServerService {
 	/**
 	 * Install a package on a server
 	 * */
-	public String installPackage(String id, String packageName) {
+	public boolean installPackage(String id, String packageName) {
 		Server server = getServerById(id);
 		
 		RemoteCommand cmd = new RemoteCommand("apt-get -y install "+packageName);
 		cmd.setSudo(true);
-	    String result = cmd.execute(server);
+	    cmd.execute(server);
 		
-		return result;
+	    if (this.hasPackage(server, packageName)) {
+	    	return true;
+	    }
+	    
+		return false;
 	}
 	
 	/**

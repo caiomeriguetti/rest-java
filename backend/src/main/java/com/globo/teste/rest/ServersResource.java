@@ -28,29 +28,28 @@ public class ServersResource {
 	public Response removePackage(@PathParam("id") String id,
 			   					  @PathParam("package") String packageName) {
 		
-		String installResult = serverService.uninstallPackage(id, packageName);
+		boolean success = serverService.uninstallPackage(id, packageName);
 	    
-	    GenericMessage result = new GenericMessage();
-	    result.text = installResult;
-	    result.code = (!serverService.hasPackage(id, packageName)) ? 1 : 0;
-	    
-		return Response.status(200).entity(result).build();
+		if (!success) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+		
+		return Response.ok().build();
 		
 	}
 	
 	@PUT
 	@Path("{id}/{package}")
-	@Produces(MediaType.APPLICATION_JSON)
 	public Response installPackage(@PathParam("id") String id,
 								   @PathParam("package") String packageName) {
 	    
-	    String installResult = serverService.installPackage(id, packageName);
+	    boolean success = serverService.installPackage(id, packageName);
 	    
-	    GenericMessage result = new GenericMessage();
-	    result.text = installResult;
-	    result.code = (serverService.hasPackage(id, packageName)) ? 1 : 0;
+	    if (!success) {
+	    	return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+	    }
 	    
-		return Response.status(200).entity(result).build();
+		return Response.ok().build();
 	}
 	
 	@GET
@@ -78,12 +77,13 @@ public class ServersResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response delete(@PathParam("id") String id) {
 		
-		boolean success = serverService.delete(id);
+		try {
+			serverService.delete(id);
+		} catch (Exception e) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
 		
-		GenericMessage response = new GenericMessage();
-		response.code=(success) ? 1: 0;
-		
-		return Response.status(200).entity(response).build();
+		return Response.status(Response.Status.OK).build();
 	}
 	
 	@POST
@@ -125,7 +125,7 @@ public class ServersResource {
 	    	((GenericMessage)response).code = 0;
 	    	((GenericMessage)response).text = "Object doesnt exist";
 	    }
-		return Response.status(200).entity(response).build();
+		return Response.ok().entity(response).build();
 	}
 	
 	@GET
