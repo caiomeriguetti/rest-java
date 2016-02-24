@@ -173,6 +173,10 @@ export class ServerInfoComponent implements OnInit {
     this.delPackage(packageName);
   }
 
+  onClickRefresh () {
+    this.loadPackages();
+  }
+
   onSerachKeywordChange () {
     this.filterList();
   }

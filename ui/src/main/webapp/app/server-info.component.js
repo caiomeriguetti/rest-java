@@ -166,6 +166,9 @@ System.register(['angular2/core', './backend.service'], function(exports_1, cont
                 ServerInfoComponent.prototype.onClickDel = function (packageName) {
                     this.delPackage(packageName);
                 };
+                ServerInfoComponent.prototype.onClickRefresh = function () {
+                    this.loadPackages();
+                };
                 ServerInfoComponent.prototype.onSerachKeywordChange = function () {
                     this.filterList();
                 };

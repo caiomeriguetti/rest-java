@@ -16,7 +16,8 @@ tomcatAppsDir="/var/lib/tomcat7"
 cd $appPath/backend
 sudo mvn clean package
 sudo mkdir -p $tomcatAppsDir/servers-backend/
-sudo chmod 777 -R $tomcatAppsDir/servers-backend/
+sudo rm -rf $tomcatAppsDir/servers-backend/ROOT.war
+sudo rm -rf $tomcatAppsDir/servers-backend/ROOT
 sudo cp -a target/rest-java.war $tomcatAppsDir/servers-backend/ROOT.war
 
 #frontend
@@ -25,6 +26,7 @@ sudo npm install
 cd $appPath/ui
 sudo mvn clean package
 sudo mkdir -p $tomcatAppsDir/servers-ui/
-sudo chmod 777 -R $tomcatAppsDir/servers-ui/
+sudo rm -rf $tomcatAppsDir/servers-ui/ROOT.war
+sudo rm -rf $tomcatAppsDir/servers-ui/ROOT
 sudo cp -a target/servers-ui.war $tomcatAppsDir/servers-ui/ROOT.war
-sudo service tomcat7 restart
+sudo service tomcat7 force-reload
