@@ -61,9 +61,9 @@ export class ServerInfoComponent implements OnInit {
     var confirmed = confirm("Are you sure?");
     if (confirmed) {
       self.setLoadingPackage(packageName, true);
-      this.backendService.delPackage(this._server.id, packageName, function (result) {
+      this.backendService.delPackage(this._server.id, packageName, function (ok, result) {
         self.setLoadingPackage(packageName, true);
-        if (result.code === 1) {
+        if (ok) {
           self.infoMessage = {
             text: "The package "+packageName+" was deleted.",
             type: "success"
@@ -101,10 +101,10 @@ export class ServerInfoComponent implements OnInit {
     if (confirmed) {
       self.loading = true;
       self.installing = true;
-      this.backendService.installPackage(this._server.id, name, function (result) {
+      this.backendService.installPackage(this._server.id, name, function (ok, result) {
         self.loading = false;
         self.installing = false;
-        if (result.code === 1) {
+        if (ok) {
           self.infoMessage = {
             text: "The package "+name+" was installed.",
             type: "success"

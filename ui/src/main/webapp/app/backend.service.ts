@@ -34,10 +34,10 @@ export class BackendService {
 			method: "delete",
 			success: function (r) {
 				if (onLoad) {
-					onLoad(r);
+					onLoad(true, r);
 				}
 			},error: function (){
-
+				if (onLoad) onLoad(false);
 			}
 		});
 	}
@@ -61,10 +61,12 @@ export class BackendService {
 			method: "put",
 			success: function (r) {
 				if (onLoad) {
-					onLoad(r);
+					onLoad(true, r);
 				}
 			},error: function (){
-
+				if (onLoad) {
+					onLoad(false);
+				}
 			}
 		});
 	}
@@ -75,10 +77,12 @@ export class BackendService {
 			method: "delete",
 			success: function (r) {
 				if (onLoad) {
-					onLoad(r);
+					onLoad(true, r);
 				}
 			},error: function (){
-
+				if (onLoad) {
+					onLoad(false);
+				}
 			}
 		});
 	}

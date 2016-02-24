@@ -137,9 +137,9 @@ System.register(['angular2/core', './backend.service'], function(exports_1) {
                 ServerListComponent.prototype.delServer = function (server) {
                     var self = this;
                     server.deleting = true;
-                    this.backendService.delServer(server.id, function (result) {
+                    this.backendService.delServer(server.id, function (ok, result) {
                         server.deleting = false;
-                        if (result.code === 1) {
+                        if (ok) {
                             self.infoMessage = {
                                 text: "Server deleted.",
                                 type: "success"

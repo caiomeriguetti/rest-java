@@ -45,9 +45,11 @@ System.register(['angular2/core'], function(exports_1) {
                         method: "delete",
                         success: function (r) {
                             if (onLoad) {
-                                onLoad(r);
+                                onLoad(true, r);
                             }
                         }, error: function () {
+                            if (onLoad)
+                                onLoad(false);
                         }
                     });
                 };
@@ -69,9 +71,12 @@ System.register(['angular2/core'], function(exports_1) {
                         method: "put",
                         success: function (r) {
                             if (onLoad) {
-                                onLoad(r);
+                                onLoad(true, r);
                             }
                         }, error: function () {
+                            if (onLoad) {
+                                onLoad(false);
+                            }
                         }
                     });
                 };
@@ -81,9 +86,12 @@ System.register(['angular2/core'], function(exports_1) {
                         method: "delete",
                         success: function (r) {
                             if (onLoad) {
-                                onLoad(r);
+                                onLoad(true, r);
                             }
                         }, error: function () {
+                            if (onLoad) {
+                                onLoad(false);
+                            }
                         }
                     });
                 };
