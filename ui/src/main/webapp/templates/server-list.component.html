@@ -50,7 +50,7 @@
 					<span>Search</span>
 				</span>
 			  <input type="text" [disabled]="loading" #input class="form-control search-input" placeholder="Enter server ip to add" aria-describedby="basic-addon2" (keyup)="onSerachKeywordChange(input.value)">
-			  <span class="input-group-btn" *ngIf="canAdd">
+			  <span class="input-group-btn">
 	        <button [disabled]="loading" class="btn btn-primary" type="button" (click)="onClickAdd(input.value)">Add Server</button>
 	      </span>
 			</div>
