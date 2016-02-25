@@ -1,6 +1,4 @@
-System.register(['angular2/core', './backend.service'], function(exports_1, context_1) {
-    "use strict";
-    var __moduleName = context_1 && context_1.id;
+System.register(['angular2/core', './backend.service'], function(exports_1) {
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
         var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
         if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -68,6 +66,7 @@ System.register(['angular2/core', './backend.service'], function(exports_1, cont
                 ServerInfoComponent.prototype.removePackage = function (name) {
                     var names = name.split(" ");
                     for (var i = 0; i < names.length; i++) {
+                        this.packagesDict[names[i]] = false;
                         $(this.element.nativeElement).find("[data-packname=\"" + names[i] + "\"]").remove();
                     }
                 };
@@ -198,7 +197,7 @@ System.register(['angular2/core', './backend.service'], function(exports_1, cont
                     __metadata('design:paramtypes', [backend_service_1.BackendService, core_1.NgZone, core_1.ElementRef])
                 ], ServerInfoComponent);
                 return ServerInfoComponent;
-            }());
+            })();
             exports_1("ServerInfoComponent", ServerInfoComponent);
         }
     }

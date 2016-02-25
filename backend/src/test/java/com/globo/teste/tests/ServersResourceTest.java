@@ -1,6 +1,4 @@
 package com.globo.teste.tests;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
@@ -9,27 +7,20 @@ import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
+import org.glassfish.jersey.test.JerseyTest;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Assert;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.globo.teste.model.Server;
 
 
-public class ServersResourceTest {
+public class ServersResourceTest extends JerseyTest {
 	
-	private static String serverUrl = Env.getBackendUrl();
-	
-	private Client client;
-	private WebTarget webTarget;
-	
-	@BeforeClass
-	public void setUp() {
-		client = ClientBuilder.newClient();
-		webTarget = client.target(serverUrl);
-	}
+	public ServersResourceTest() {
+        super(new com.globo.teste.config.Application());
+    }
 	
 	@Test
 	public void testInstallListRemovePackageOnServer() {
@@ -47,7 +38,7 @@ public class ServersResourceTest {
 		formData.add("password", onlineServer.getPassword());
 		formData.add("distribution", onlineServer.getDistribution());
 		
-		Invocation.Builder request = invocation(webTarget.path("servers"));
+		Invocation.Builder request = invocation(target().path("servers"));
 		Response response = request.post(Entity.form(formData));
 		
 		String entity = response.readEntity(String.class);
@@ -55,14 +46,14 @@ public class ServersResourceTest {
 		
 		//installing the package on the server
 		String serverId = responseObject.getString("id");
-		request = invocation(webTarget.path("servers/"+serverId+"/iotop"));
+		request = invocation(target().path("servers/"+serverId+"/iotop"));
 		
 		response = request.put(Entity.form(new MultivaluedHashMap<String, String>()));
 		
 		Assert.assertEquals(response.getStatus(), 200);
 		
 		//getting the list of packages
-		request = invocation(webTarget.path("servers/"+serverId+"/packages"));
+		request = invocation(target().path("servers/"+serverId+"/packages"));
 		response = request.get();
 		
 		entity = response.readEntity(String.class);
@@ -75,7 +66,7 @@ public class ServersResourceTest {
 		Assert.assertTrue(packageList.length() >= 1);
 		
 		//deleting the package from the server
-		request = invocation(webTarget.path("servers/"+serverId+"/iotop"));
+		request = invocation(target().path("servers/"+serverId+"/iotop"));
 		response = request.delete();
 
 		Assert.assertEquals(response.getStatus(), 200);
@@ -85,7 +76,7 @@ public class ServersResourceTest {
 	public void testDeleteServer() {
 		
 		//adding
-		Invocation.Builder request = invocation(webTarget.path("servers"));
+		Invocation.Builder request = invocation(target().path("servers"));
 		
 		MultivaluedMap<String, String> formData = new MultivaluedHashMap<String, String>();
 		
@@ -106,7 +97,7 @@ public class ServersResourceTest {
 		String id = responseObject.getString("id");
 
 		//deleting
-		request = invocation(webTarget.path("servers/"+id));
+		request = invocation(target().path("servers/"+id));
 		response = request.delete();
 		
 		Assert.assertEquals(response.getStatus(), 200);
@@ -115,7 +106,7 @@ public class ServersResourceTest {
 	
 	@Test
 	public void testListServers() throws Exception {
-		Invocation.Builder request = invocation(webTarget.path("servers"));
+		Invocation.Builder request = invocation(target().path("servers"));
 		Response resp = request.get();
 		
 		String serversJson = resp.readEntity(String.class);
@@ -132,7 +123,7 @@ public class ServersResourceTest {
 	public void testAddUpdateAndGetById() throws Exception {
 		
 		//adding new server
-		Invocation.Builder request = invocation(webTarget.path("servers"));
+		Invocation.Builder request = invocation(target().path("servers"));
 		
 		MultivaluedMap<String, String> formData = new MultivaluedHashMap<String, String>();
 		
@@ -161,7 +152,7 @@ public class ServersResourceTest {
 		Assert.assertTrue(responseObject.getString("id").length() > 3);
 		
 		//updating
-		request = invocation(webTarget.path("servers/"+id));
+		request = invocation(target().path("servers/"+id));
 		formData = new MultivaluedHashMap<String, String>();
 
 		serverData = new Server();
@@ -179,7 +170,7 @@ public class ServersResourceTest {
 		Assert.assertEquals(response.getStatus(), 200);
 		
 		//getting by id to check if update was done successfully
-		request = invocation(webTarget.path("servers/"+id));
+		request = invocation(target().path("servers/"+id));
 		response = request.get();
 		
 		entity = (String)response.readEntity(String.class);

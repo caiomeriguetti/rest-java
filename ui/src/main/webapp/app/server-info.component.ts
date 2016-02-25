@@ -65,6 +65,7 @@ export class ServerInfoComponent implements OnInit {
   removePackage (name) {
     var names = name.split(" ");
     for (var i=0; i<names.length; i++) {
+      this.packagesDict[names[i]] = false;
       $(this.element.nativeElement).find("[data-packname=\""+names[i]+"\"]").remove();
     }
   }

@@ -2,10 +2,6 @@ package com.globo.teste.tests;
 
 public class Env {
     
-    public static String getBackendUrl() {
-        return getEnvVar("SERVERSAPP_BACKEND_URL", "http://localhost:8282/api");
-    }
-    
     public static String getTestServerIp() {
         return getEnvVar("SERVERSAPP_TESTSERVER_IP", "54.187.107.64");
     }
