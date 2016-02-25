@@ -1,6 +1,6 @@
 How to run the servers app:
 
-```shellscript
+```bash
 cd enter/your/app/dir
 /bin/bash install.sh
 /bin/bash deploy.sh
