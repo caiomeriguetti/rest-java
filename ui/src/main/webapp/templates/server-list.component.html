@@ -16,14 +16,14 @@
 					</div>
 	        <div class="row" *ngIf="serverData != null">
 						<div class="col-md-12">
-				
+
 							  	<input type="text" [ngClass]="{'form-control': true}" placeholder="Name" [(ngModel)]="serverData.name">
 							    <br/>
 							    <input type="text" [ngClass]="{'form-control': true, error:validationErrors.ip}" class="form-control" placeholder="IP" [(ngModel)]="serverData.ip">
 							    <br/>
 									<input type="text" [ngClass]="{'form-control': true, error:validationErrors.user}" class="form-control" placeholder="Username" [(ngModel)]="serverData.user">
 									<br/>
-									<input type="text" [ngClass]="{'form-control': true, error:validationErrors.password}" class="form-control" placeholder="Password" [(ngModel)]="serverData.password">
+									<input type="password" [ngClass]="{'form-control': true, error:validationErrors.password}" class="form-control" placeholder="Password" [(ngModel)]="serverData.password">
 									<br/>
 									<div class="input-group">
 									  <span class="input-group-addon" id="basic-addon1">Distribution</span>
@@ -31,7 +31,7 @@
 											<option>Ubuntu</option>
 										</select>
 									</div>
-							
+
 						</div>
 					</div>
 	      </div>
@@ -56,7 +56,7 @@
 			</div>
 		</div>
 	</div>
-	<ul class="list-group"> 
+	<ul class="list-group">
 	  <li *ngFor="#server of listServers" [ngClass]="{'list-group-item':true, 'app-server':true, 'deleting': server.deleting}" [attr.data-serverid]="server.id">
 	  	<span class="name" *ngIf="server.name">{{server.name}}:</span>
 	  	<span class="ip">{{server.ip}}</span>

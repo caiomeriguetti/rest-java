@@ -1,4 +1,6 @@
-System.register(['angular2/core', './backend.service'], function(exports_1) {
+System.register(['angular2/core', './backend.service'], function(exports_1, context_1) {
+    "use strict";
+    var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
         var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
         if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -29,6 +31,8 @@ System.register(['angular2/core', './backend.service'], function(exports_1) {
                     this.infoMessage = null;
                     this.loading = false;
                     this.installing = false;
+                    this.deleting = false;
+                    this.packagesDict = {};
                 }
                 Object.defineProperty(ServerInfoComponent.prototype, "server", {
                     get: function () {
@@ -45,24 +49,39 @@ System.register(['angular2/core', './backend.service'], function(exports_1) {
                 ServerInfoComponent.prototype.ngOnInit = function () {
                 };
                 ServerInfoComponent.prototype.addPackage = function (name) {
-                    this.packages.push({ name: name });
+                    var names = name.split(" ");
+                    for (var i = 0; i < names.length; i++) {
+                        if (!this.packagesDict[names[i]]) {
+                            this.packages.push({ name: names[i] });
+                            this.packagesDict[names[i]] = true;
+                        }
+                    }
                 };
                 ServerInfoComponent.prototype.setLoadingPackage = function (name, loading) {
                     var result = $.grep(this.packages, function (e) {
                         return e.name == name;
                     });
-                    result[0].loading = loading;
+                    if (result[0]) {
+                        result[0].loading = loading;
+                    }
                 };
                 ServerInfoComponent.prototype.removePackage = function (name) {
-                    $(this.element.nativeElement).find("[data-packname=\"" + name + "\"]").remove();
+                    var names = name.split(" ");
+                    for (var i = 0; i < names.length; i++) {
+                        $(this.element.nativeElement).find("[data-packname=\"" + names[i] + "\"]").remove();
+                    }
                 };
                 ServerInfoComponent.prototype.delPackage = function (packageName) {
                     var self = this;
                     var confirmed = confirm("Are you sure?");
                     if (confirmed) {
                         self.setLoadingPackage(packageName, true);
+                        self.deleting = true;
+                        self.loading = true;
                         this.backendService.delPackage(this._server.id, packageName, function (ok, result) {
-                            self.setLoadingPackage(packageName, true);
+                            self.setLoadingPackage(packageName, false);
+                            self.deleting = false;
+                            self.loading = false;
                             if (ok) {
                                 self.infoMessage = {
                                     text: "The package " + packageName + " was deleted.",
@@ -88,6 +107,9 @@ System.register(['angular2/core', './backend.service'], function(exports_1) {
                     var self = this;
                     self.loading = true;
                     this.backendService.loadPackages(this._server.id, function (packages) {
+                        for (var i = 0; i < packages.length; i++) {
+                            self.packagesDict[packages[i].name] = true;
+                        }
                         self.packages = packages;
                         self.filterList();
                         self.loading = false;
@@ -124,10 +146,17 @@ System.register(['angular2/core', './backend.service'], function(exports_1) {
                 };
                 ServerInfoComponent.prototype.filterList = function () {
                     var element = $(this.element.nativeElement);
-                    var val = element.find(".search-input").val();
+                    var val = $.trim(element.find(".search-input").val());
+                    var vals = val.split(" ");
                     element.find(".app-package").each(function (index, item) {
                         var name = $(item).find(".name").html();
-                        if (name.toLowerCase().indexOf(val.toLowerCase()) >= 0) {
+                        var hide = true;
+                        for (var i = 0; i < vals.length; i++) {
+                            if (name.toLowerCase().indexOf(vals[i].toLowerCase()) >= 0 && vals[i] != "" && vals[i] != null) {
+                                hide = false;
+                            }
+                        }
+                        if (!hide || val === "") {
                             $(item).show();
                         }
                         else {
@@ -146,6 +175,9 @@ System.register(['angular2/core', './backend.service'], function(exports_1) {
                 */
                 ServerInfoComponent.prototype.onClickDel = function (packageName) {
                     this.delPackage(packageName);
+                };
+                ServerInfoComponent.prototype.onClickRefresh = function () {
+                    this.loadPackages();
                 };
                 ServerInfoComponent.prototype.onSerachKeywordChange = function () {
                     this.filterList();
@@ -166,7 +198,7 @@ System.register(['angular2/core', './backend.service'], function(exports_1) {
                     __metadata('design:paramtypes', [backend_service_1.BackendService, core_1.NgZone, core_1.ElementRef])
                 ], ServerInfoComponent);
                 return ServerInfoComponent;
-            })();
+            }());
             exports_1("ServerInfoComponent", ServerInfoComponent);
         }
     }

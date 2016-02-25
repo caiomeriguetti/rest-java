@@ -4,6 +4,11 @@
 	cursor: pointer;
 }
 
+.app-refresh {
+	margin-right: 20px;
+	cursor: pointer;
+}
+
 #infoAlert {
 	position: fixed;
 	width: 100%;

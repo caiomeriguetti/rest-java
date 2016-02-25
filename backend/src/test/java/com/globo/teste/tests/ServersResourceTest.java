@@ -48,7 +48,7 @@ public class ServersResourceTest {
 		formData.add("distribution", onlineServer.getDistribution());
 		
 		Invocation.Builder request = invocation(webTarget.path("servers"));
-		Response response = request.put(Entity.form(formData));
+		Response response = request.post(Entity.form(formData));
 		
 		String entity = response.readEntity(String.class);
 		JSONObject responseObject = new JSONObject(entity);
@@ -59,14 +59,7 @@ public class ServersResourceTest {
 		
 		response = request.put(Entity.form(new MultivaluedHashMap<String, String>()));
 		
-		entity = response.readEntity(String.class);
-		
-		Assert.assertNotNull(entity);
-		
-		responseObject = new JSONObject(entity);
-		
-		Assert.assertNotNull(responseObject);
-		Assert.assertEquals(responseObject.getInt("code"), 1);
+		Assert.assertEquals(response.getStatus(), 200);
 		
 		//getting the list of packages
 		request = invocation(webTarget.path("servers/"+serverId+"/packages"));
@@ -84,15 +77,8 @@ public class ServersResourceTest {
 		//deleting the package from the server
 		request = invocation(webTarget.path("servers/"+serverId+"/iotop"));
 		response = request.delete();
-		
-		entity = response.readEntity(String.class);
-		
-		Assert.assertNotNull(entity);
-		
-		responseObject = new JSONObject(entity);
-		
-		Assert.assertNotNull(responseObject);
-		Assert.assertEquals(responseObject.getInt("code"), 1);
+
+		Assert.assertEquals(response.getStatus(), 200);
 	}
 	
 	@Test
@@ -114,7 +100,7 @@ public class ServersResourceTest {
 		formData.add("password", serverData.getPassword());
 		formData.add("distribution", serverData.getDistribution());
 		
-		Response response = request.put(Entity.form(formData));
+		Response response = request.post(Entity.form(formData));
 		String entity = response.readEntity(String.class);
 		JSONObject responseObject = new JSONObject(entity);
 		String id = responseObject.getString("id");
@@ -123,15 +109,8 @@ public class ServersResourceTest {
 		request = invocation(webTarget.path("servers/"+id));
 		response = request.delete();
 		
-		entity = response.readEntity(String.class);
+		Assert.assertEquals(response.getStatus(), 200);
 		
-		Assert.assertNotNull(entity);
-		
-		responseObject = new JSONObject(entity);
-		
-		Assert.assertNotNull(responseObject);
-		Assert.assertTrue(responseObject.has("code"));
-		Assert.assertEquals(responseObject.getInt("code"), 1);
 	}
 	
 	@Test
@@ -168,7 +147,7 @@ public class ServersResourceTest {
 		formData.add("password", serverData.getPassword());
 		formData.add("distribution", serverData.getDistribution());
 		
-		Response response = request.put(Entity.form(formData));
+		Response response = request.post(Entity.form(formData));
 	
 		String entity = response.readEntity(String.class);
 		
@@ -196,8 +175,8 @@ public class ServersResourceTest {
 		formData.add("password", serverData.getPassword());
 		formData.add("distribution", serverData.getDistribution());
 		
-		response = request.put(Entity.form(formData));
-		entity = response.readEntity(String.class);
+		response = request.post(Entity.form(formData));
+		Assert.assertEquals(response.getStatus(), 200);
 		
 		//getting by id to check if update was done successfully
 		request = invocation(webTarget.path("servers/"+id));
