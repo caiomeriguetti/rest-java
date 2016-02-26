@@ -10,3 +10,7 @@ ui/src/main/webapp/npm-debug.log
 ui/src/main/webapp/node_modules
 ui/.project
 ui/.classpath
+
+https-rproxy/.classpath
+https-rproxy/.project
+https-rproxy/.settings
