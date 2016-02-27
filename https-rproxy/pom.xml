@@ -1,11 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.example</groupId>
-  <artifactId>hello-world</artifactId>
+  <groupId>com.globo.teste</groupId>
+  <artifactId>https-reverse-proxy</artifactId>
   <version>0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
-  <name>Jetty HelloWorld</name>
+  <name>HTTPS Reverse Proxy</name>
 
  <dependencies>
 	 
@@ -30,7 +30,15 @@
 </dependencies>
  
   <build>
+	  <resources>
+	     <resource>
+	       <directory>src/main/resources</directory>
+	     </resource>
+	   </resources>
+	   
     <plugins>
+
+    
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>

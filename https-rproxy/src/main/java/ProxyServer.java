@@ -1,34 +1,44 @@
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.eclipse.jetty.proxy.ProxyServlet;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.HttpConfiguration;
+import org.eclipse.jetty.server.HttpConnectionFactory;
+import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.SslConnectionFactory;
 import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 
 
 public class ProxyServer {
+	
+	private Server server;
+	
+	public ProxyServer() {
+		server = new Server();
+		
+		ServerConnector httpConnector = getHttpConnector();
+		ServerConnector httpsConnector = getHttpsConnector();
+		
+		server.setConnectors(new Connector[] { httpConnector, httpsConnector });
+		
+		configureProxyServlet();
+		
+	}
+	
+	public void start () throws Exception {
+        server.start();
+        server.dumpStdErr();
+        server.join();
+	}
+	
+	private void configureProxyServlet () {
 
-    public static void main(String[] args) throws Exception {
-
-        Server server = new Server();
-
-        // HTTP connector
-        ServerConnector http = new ServerConnector(server);
-        http.setHost("localhost");
-        http.setPort(8899);
-        http.setIdleTimeout(30000);
- 
-        // Set the connector
-        server.addConnector(http);
- 
         Map<String, String> servletInitParams = new HashMap<String, String>();
-        servletInitParams.put("maxThreads", "10");
+        servletInitParams.put("maxThreads", "100");
         
         ServletHolder holder = new ServletHolder();
         holder.setInitParameters(servletInitParams);
@@ -37,37 +47,36 @@ public class ProxyServer {
         ServletHandler handler = new ServletHandler();
         handler.addServletWithMapping(holder, "/*");
         
-        // Set a handler
         server.setHandler(handler);
-
-        server.start();
-        server.dumpStdErr();
-        server.join();
-
-    }
-    
-    public static class BackendServlet extends ProxyServlet {
-
-        private static final long serialVersionUID = 1L;
+	}
+	
+	private ServerConnector getHttpConnector () {
+        ServerConnector http = new ServerConnector(server);
+        http.setPort(8899);
+        http.setIdleTimeout(30000);
         
-        protected String rewriteTarget(HttpServletRequest clientRequest){
-            
-            String uri = clientRequest.getRequestURI().toString();
-            
-            List<String> backendServers = new ArrayList<String>();
-            backendServers.add("localhost:8282");
-            backendServers.add("localhost:8383");
-            
-            String selectedBackend = null;
-            
-            if (Math.random() > 0.5) {
-                selectedBackend = backendServers.get(0);
-            } else {
-                selectedBackend = backendServers.get(1);
-            }
-            
-            return "http://"+selectedBackend+uri;
-        }
+        return http;
+	}
+	
+	private ServerConnector getHttpsConnector () {
+		HttpConfiguration httpsConfig = new HttpConfiguration();
+        httpsConfig.addCustomizer(new SecureRequestCustomizer());
+        
+        SslContextFactory sslContextFactory = new SslContextFactory();
+        sslContextFactory.setKeyStorePath(ProxyServer.class.getResource("keystore.jks").getPath());
+        sslContextFactory.setKeyStorePassword("password");
+        sslContextFactory.setKeyManagerPassword("password");
 
+        ServerConnector sslConnector = new ServerConnector(server,
+                new SslConnectionFactory(sslContextFactory, "http/1.1"),
+                new HttpConnectionFactory(httpsConfig));
+        sslConnector.setPort(9998);
+        
+        return sslConnector;
+	}
+	
+    public static void main(String[] args) throws Exception {
+    	ProxyServer s = new ProxyServer();
+    	s.start();
     }
 }
