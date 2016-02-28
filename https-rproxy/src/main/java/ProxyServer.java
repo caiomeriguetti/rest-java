@@ -1,6 +1,7 @@
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
@@ -19,11 +20,8 @@ public class ProxyServer {
 	
 	public ProxyServer() {
 		server = new Server();
-		
-		ServerConnector httpConnector = getHttpConnector();
-		ServerConnector httpsConnector = getHttpsConnector();
-		
-		server.setConnectors(new Connector[] { httpConnector, httpsConnector });
+
+		setConnectors();
 		
 		configureProxyServlet();
 		
@@ -33,6 +31,42 @@ public class ProxyServer {
         server.start();
         server.dumpStdErr();
         server.join();
+	}
+	
+	private void setConnectors () {
+		
+		//HTTP
+		HttpConfiguration httpConfig = new HttpConfiguration();
+		httpConfig.setSecureScheme("https");
+		httpConfig.setSecurePort(443);
+		httpConfig.setOutputBufferSize(32768);
+		
+		ServerConnector http = new ServerConnector(server,
+                new HttpConnectionFactory(httpConfig));
+        http.setPort(80);
+        http.setIdleTimeout(30000);
+        
+        //HTTPS
+        HttpConfiguration httpsConfig = new HttpConfiguration(httpConfig);
+        SecureRequestCustomizer src = new SecureRequestCustomizer();
+        src.setStsMaxAge(2000);
+        src.setSniHostCheck(true);
+        src.setStsIncludeSubDomains(true);
+        httpsConfig.addCustomizer(src);
+        
+        SslContextFactory sslContextFactory = new SslContextFactory();
+        sslContextFactory.setKeyStorePath(ProxyServer.class.getResource("keystore.jks").getPath());
+        sslContextFactory.setKeyStorePassword("password");
+        sslContextFactory.setKeyManagerPassword("password");
+
+        ServerConnector https = new ServerConnector(server, 
+        		new SslConnectionFactory(sslContextFactory,HttpVersion.HTTP_1_1.asString()),
+        		new HttpConnectionFactory(httpsConfig)
+        		);
+        https.setPort(443);
+        https.setIdleTimeout(500000);
+
+		server.setConnectors(new Connector[] { https, http});
 	}
 	
 	private void configureProxyServlet () {
@@ -48,31 +82,6 @@ public class ProxyServer {
         handler.addServletWithMapping(holder, "/*");
         
         server.setHandler(handler);
-	}
-	
-	private ServerConnector getHttpConnector () {
-        ServerConnector http = new ServerConnector(server);
-        http.setPort(8899);
-        http.setIdleTimeout(30000);
-        
-        return http;
-	}
-	
-	private ServerConnector getHttpsConnector () {
-		HttpConfiguration httpsConfig = new HttpConfiguration();
-        httpsConfig.addCustomizer(new SecureRequestCustomizer());
-        
-        SslContextFactory sslContextFactory = new SslContextFactory();
-        sslContextFactory.setKeyStorePath(ProxyServer.class.getResource("keystore.jks").getPath());
-        sslContextFactory.setKeyStorePassword("password");
-        sslContextFactory.setKeyManagerPassword("password");
-
-        ServerConnector sslConnector = new ServerConnector(server,
-                new SslConnectionFactory(sslContextFactory, "http/1.1"),
-                new HttpConnectionFactory(httpsConfig));
-        sslConnector.setPort(9998);
-        
-        return sslConnector;
 	}
 	
     public static void main(String[] args) throws Exception {

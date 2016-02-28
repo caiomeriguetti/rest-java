@@ -37,17 +37,27 @@
 			</Host>
 		</Engine>
 	</Service>
-
+	
+	<!-- REST API -->
 	<Service name="servers-backend">
 	    <Connector port="8282" protocol="org.apache.coyote.http11.Http11NioProtocol" />
-	    <Engine name="Catalina82" defaultHost="localhost">
+	    <Engine name="Catalina83" defaultHost="localhost">
 		<Host name="localhost" appBase="servers-backend" unpackWARs="true" autoDeploy="true" />
 	    </Engine>
 	</Service>
 
+	<!-- Frontend 1 -->
 	<Service name="servers-ui">
-	    <Connector port="8181" protocol="org.apache.coyote.http11.Http11NioProtocol" />
-	    <Engine name="Catalina81" defaultHost="localhost">
+	    <Connector port="7070" protocol="org.apache.coyote.http11.Http11NioProtocol" />
+	    <Engine name="Catalina70" defaultHost="localhost">
+		<Host name="localhost" appBase="servers-ui" unpackWARs="true" autoDeploy="true" />
+	    </Engine>
+	</Service>
+	
+	<!-- Frontend 2 -->
+	<Service name="servers-ui">
+	    <Connector port="7171" protocol="org.apache.coyote.http11.Http11NioProtocol" />
+	    <Engine name="Catalina70" defaultHost="localhost">
 		<Host name="localhost" appBase="servers-ui" unpackWARs="true" autoDeploy="true" />
 	    </Engine>
 	</Service>

@@ -14,8 +14,8 @@ public class BackendServlet extends ProxyServlet {
             String uri = clientRequest.getRequestURI().toString();
             
             List<String> backendServers = new ArrayList<String>();
-            backendServers.add("localhost:8282");
-            backendServers.add("localhost:8181");
+            backendServers.add("localhost:7171");
+            backendServers.add("localhost:7070");
             
             String selectedBackend = null;
             
