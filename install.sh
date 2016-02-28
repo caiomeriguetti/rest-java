@@ -20,11 +20,6 @@ sudo apt-get install -y oracle-java8-set-default
 
 #tomcat7
 sudo apt-get install -y tomcat7
-if [ ! -f $tomcatConfigPath/server.xml.backup ]; then
-  sudo cp $tomcatConfigPath/server.xml $tomcatConfigPath/server.xml.backup
-fi
-
-sudo cp $appPath/server.xml.template $tomcatConfigPath/server.xml
 
 #mongodb
 echo "deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list
