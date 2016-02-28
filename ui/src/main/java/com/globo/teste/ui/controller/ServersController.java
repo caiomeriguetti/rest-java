@@ -1,6 +1,8 @@
 package com.globo.teste.ui.controller;
  
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,32 +23,43 @@ import com.globo.teste.ui.config.Env;
 @Controller
 public class ServersController {
 	
-	@RequestMapping(value="/servers/{id}/{package}", produces="application/json", method=RequestMethod.DELETE)
+	@RequestMapping(
+		value="/servers/{id}/{package}", 
+		produces="application/json", 
+		method=RequestMethod.DELETE
+	)
 	@ResponseBody
 	public ResponseEntity<String> delPackages(@PathVariable("id") String id,
 			@PathVariable("package") String packageName) {
 	    RestTemplate request = new RestTemplate();
 	    try {
-	    	request.delete(backendUrl("/servers/"+id+"/"+packageName));
+	    	return request.exchange(
+	    		backendUrl("/servers/"+id+"/"+packageName), HttpMethod.DELETE, 
+        		null, String.class
+    	    );
 	    } catch (HttpServerErrorException e) {
 	    	return new ResponseEntity<String>(null, null, e.getStatusCode());
 	    }
-	    
-	    return new ResponseEntity<String>(null, null, HttpStatus.OK);
+
 	}
 	
-	@RequestMapping(value="/servers/{id}/{package}", produces="application/json", method=RequestMethod.PUT)
+	@RequestMapping(
+		value="/servers/{id}/{package}", 
+		produces="application/json", 
+		method=RequestMethod.PUT
+	)
 	@ResponseBody
 	public ResponseEntity<String> installPackages(@PathVariable("id") String id,
 			@PathVariable("package") String packageName) {
 	    RestTemplate request = new RestTemplate();
 	    try {
-	    	request.put(backendUrl("/servers/"+id+"/"+packageName), null);
+	    	return request.exchange(
+	    		backendUrl("/servers/"+id+"/"+packageName), HttpMethod.PUT, 
+        		null, String.class
+    	    );
 	    } catch (HttpServerErrorException e) {
 	    	return new ResponseEntity<String>(null, null, e.getStatusCode());
 	    }
-	    
-	    return new ResponseEntity<String>(null, null, HttpStatus.OK);
 	}
 	
 	@RequestMapping(value="/servers/{id}/packages", produces="application/json")
@@ -80,11 +93,11 @@ public class ServersController {
 	)
 	@ResponseBody
 	public ResponseEntity<String> saveServer(
-			@RequestParam("name") String name,
+			@RequestParam(value="name", defaultValue="") String name,
 			@RequestParam("ip") String ip,
 			@RequestParam("user") String user,
 			@RequestParam("password") String password,
-			@RequestParam("distribution") String distribution) {
+			@RequestParam(value="distribution", defaultValue="") String distribution) {
 	    
 	    MultiValueMap<String, String> data = new LinkedMultiValueMap<String, String>();
 	    data.add("name", name);
@@ -110,14 +123,14 @@ public class ServersController {
 	    RestTemplate request = new RestTemplate();
 	    
 	    try {
-	    	request.delete(backendUrl("/servers/"+id));
+	    	return request.exchange(
+	    		backendUrl("/servers/"+id), HttpMethod.DELETE, 
+        		null, String.class
+    	    );
 	    } catch (Exception e) {
 	    	return new ResponseEntity<String>(null, null, HttpStatus.INTERNAL_SERVER_ERROR);
 	    }
-	    
-	    return new ResponseEntity<String>(null, null, HttpStatus.OK);
 	}
-	
 	
 	@RequestMapping(
 		value="/servers/{id}", 
@@ -138,9 +151,12 @@ public class ServersController {
 	    data.add("user", body.getFirst("user"));
 	    data.add("password", body.getFirst("password"));
 		data.add("distribution", body.getFirst("distribution"));
-	    
+		
 	    RestTemplate request = new RestTemplate();
-	    ResponseEntity<String> response = request.postForEntity(backendUrl("/servers/"+id), data, String.class);
+	    ResponseEntity<String> response = request.exchange(
+    		backendUrl("/servers/"+id), HttpMethod.PUT, 
+    		new HttpEntity<>(data, null), String.class
+	    );
 	    
 	    return response;
 	}

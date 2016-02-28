@@ -122,17 +122,19 @@ export class ServerListComponent implements OnInit {
       self.saving = false;
       self.canAdd = false;
 
-      if (ok && (result.id || result.code===1)) {
+      if (ok) {
         self.infoMessageModal = {
-          text: "Server info saved.",
+          text: result.text,
           type: "success"
         };
-        if (result.id) {
-          self.listServers.unshift(result);
+        if (result.data) {
+          self.serverData.id = result.data;
+          self.listServers.unshift(self.serverData);
+          this.serverData = null;
         }
       } else {
         self.infoMessageModal = {
-          text: "Problem ocurred.",
+          text: result.text,
           type: "danger"
         };
       }
@@ -152,7 +154,7 @@ export class ServerListComponent implements OnInit {
       server.deleting = false;
       if (ok) {
         self.infoMessage = {
-          text: "Server deleted.",
+          text: result.text,
           type: "success"
         };
         
@@ -160,7 +162,7 @@ export class ServerListComponent implements OnInit {
 
       } else {
         self.infoMessage = {
-          text: "Problem ocurred.",
+          text: result.text,
           type: "danger"
         };
       }

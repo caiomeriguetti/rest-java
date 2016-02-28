@@ -113,18 +113,20 @@ System.register(['angular2/core', './backend.service'], function(exports_1) {
                     this.backendService.saveServer(this.serverData, function (ok, result) {
                         self.saving = false;
                         self.canAdd = false;
-                        if (ok && (result.id || result.code === 1)) {
+                        if (ok) {
                             self.infoMessageModal = {
-                                text: "Server info saved.",
+                                text: result.text,
                                 type: "success"
                             };
-                            if (result.id) {
-                                self.listServers.unshift(result);
+                            if (result.data) {
+                                self.serverData.id = result.data;
+                                self.listServers.unshift(self.serverData);
+                                this.serverData = null;
                             }
                         }
                         else {
                             self.infoMessageModal = {
-                                text: "Problem ocurred.",
+                                text: result.text,
                                 type: "danger"
                             };
                         }
@@ -141,14 +143,14 @@ System.register(['angular2/core', './backend.service'], function(exports_1) {
                         server.deleting = false;
                         if (ok) {
                             self.infoMessage = {
-                                text: "Server deleted.",
+                                text: result.text,
                                 type: "success"
                             };
                             self.removeServerFromList(server);
                         }
                         else {
                             self.infoMessage = {
-                                text: "Problem ocurred.",
+                                text: result.text,
                                 type: "danger"
                             };
                         }
