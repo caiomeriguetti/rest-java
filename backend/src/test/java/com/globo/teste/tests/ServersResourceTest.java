@@ -45,12 +45,12 @@ public class ServersResourceTest extends JerseyTest {
 		JSONObject responseObject = new JSONObject(entity);
 		
 		//installing the package on the server
-		String serverId = responseObject.getString("id");
-		request = invocation(target().path("servers/"+serverId+"/iotop"));
+		String serverId = responseObject.getString("data");
+		request = invocation(target().path("servers/"+serverId+"/install/iotop"));
 		
 		response = request.put(Entity.form(new MultivaluedHashMap<String, String>()));
 		
-		Assert.assertEquals(response.getStatus(), 200);
+		Assert.assertEquals(200, response.getStatus());
 		
 		//getting the list of packages
 		request = invocation(target().path("servers/"+serverId+"/packages"));
@@ -66,10 +66,10 @@ public class ServersResourceTest extends JerseyTest {
 		Assert.assertTrue(packageList.length() >= 1);
 		
 		//deleting the package from the server
-		request = invocation(target().path("servers/"+serverId+"/iotop"));
+		request = invocation(target().path("servers/"+serverId+"/uninstall/iotop"));
 		response = request.delete();
 
-		Assert.assertEquals(response.getStatus(), 200);
+		Assert.assertEquals(200, response.getStatus());
 	}
 	
 	@Test
@@ -94,13 +94,13 @@ public class ServersResourceTest extends JerseyTest {
 		Response response = request.post(Entity.form(formData));
 		String entity = response.readEntity(String.class);
 		JSONObject responseObject = new JSONObject(entity);
-		String id = responseObject.getString("id");
+		String id = responseObject.getString("data");
 
 		//deleting
 		request = invocation(target().path("servers/"+id));
 		response = request.delete();
 		
-		Assert.assertEquals(response.getStatus(), 200);
+		Assert.assertEquals(200, response.getStatus());
 		
 	}
 	
@@ -146,10 +146,10 @@ public class ServersResourceTest extends JerseyTest {
 		Assert.assertTrue(entity.length() > 0);
 		
 		JSONObject responseObject = new JSONObject(entity);
-		String id = responseObject.getString("id");
+		String id = responseObject.getString("data");
 		
 		Assert.assertNotNull(id);
-		Assert.assertTrue(responseObject.getString("id").length() > 3);
+		Assert.assertTrue(id.length() > 3);
 		
 		//updating
 		request = invocation(target().path("servers/"+id));
@@ -166,8 +166,8 @@ public class ServersResourceTest extends JerseyTest {
 		formData.add("password", serverData.getPassword());
 		formData.add("distribution", serverData.getDistribution());
 		
-		response = request.post(Entity.form(formData));
-		Assert.assertEquals(response.getStatus(), 200);
+		response = request.put(Entity.form(formData));
+		Assert.assertEquals(200, response.getStatus());
 		
 		//getting by id to check if update was done successfully
 		request = invocation(target().path("servers/"+id));
@@ -176,10 +176,10 @@ public class ServersResourceTest extends JerseyTest {
 		entity = (String)response.readEntity(String.class);
 		responseObject = new JSONObject(entity);
 		
-		Assert.assertEquals(responseObject.getString("user"), serverData.getUser());
-		Assert.assertEquals(responseObject.getString("ip"), serverData.getIp());
-		Assert.assertEquals(responseObject.getString("distribution"), serverData.getDistribution());
-		Assert.assertEquals(responseObject.getString("password"), serverData.getPassword());
+		Assert.assertEquals(serverData.getUser(), responseObject.getString("user"));
+		Assert.assertEquals(serverData.getIp(), responseObject.getString("ip"));
+		Assert.assertEquals(serverData.getDistribution(), responseObject.getString("distribution"));
+		Assert.assertEquals(serverData.getPassword(), responseObject.getString("password"));
 	}
 	
 	private Invocation.Builder invocation(WebTarget target) {
