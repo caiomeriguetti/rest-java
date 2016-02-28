@@ -130,7 +130,6 @@ export class ServerListComponent implements OnInit {
         if (result.data) {
           self.serverData.id = result.data;
           self.listServers.unshift(self.serverData);
-          this.serverData = null;
         }
       } else {
         self.infoMessageModal = {

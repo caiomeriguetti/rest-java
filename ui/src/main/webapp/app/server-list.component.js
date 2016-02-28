@@ -121,7 +121,6 @@ System.register(['angular2/core', './backend.service'], function(exports_1) {
                             if (result.data) {
                                 self.serverData.id = result.data;
                                 self.listServers.unshift(self.serverData);
-                                this.serverData = null;
                             }
                         }
                         else {
