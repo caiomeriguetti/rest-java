@@ -1,5 +1,8 @@
 package com.globo.teste.rest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.DELETE;
@@ -12,6 +15,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import com.globo.teste.model.GenericMessage;
 import com.globo.teste.model.Server;
@@ -24,10 +28,14 @@ public class ServersResource {
 	@Inject ServerService serverService;
 	
 	@DELETE
-	@Path("{id}/{package}")
+	@Path("{id}/uninstall/{package}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response removePackage(@PathParam("id") String id,
 								  @NotNull @PathParam("package") String packageName) {
+		
+		if (packageName.isEmpty()) {
+			return Response.status(Response.Status.BAD_REQUEST).build();
+		}
 		
 		boolean success = serverService.uninstallPackage(id, packageName);
 	    
@@ -40,17 +48,46 @@ public class ServersResource {
 	}
 	
 	@PUT
-	@Path("{id}/{package}")
+	@Path("{id}/install/{package}")
 	public Response installPackage(@PathParam("id") String id,
 								   @NotNull @PathParam("package") String packageName) {
-	
-	    String success = serverService.installPackage(id, packageName);
+		
+		List<String> installed = new ArrayList<String>();
+		List<String> notInstalled = new ArrayList<String>();
+		
+		String[] names;
+		
+		if (packageName.contains(" ")) {
+			names = packageName.split(" ");
+			
+		} else {
+			names = new String[1];
+			names[0] = packageName;
+		}
+
+		for (String pName: names) {
+			if (installed.contains(pName)) {
+				continue;
+			}
+			
+			String success = serverService.installPackage(id, pName);
+			
+			if (success != null) {
+				installed.add(pName);
+			} else {
+				notInstalled.add(pName);
+			}
+		}
 	    
-	    if (success == null) {
+	    if (installed.size() == 0) {
 	    	return Response.serverError().build();
 	    }
 	    
-		return Response.ok().build();
+	    InstallPackageResponse entity = new InstallPackageResponse();
+	    entity.installed = installed.toArray(new String[installed.size()]);
+	    entity.notInstalled = notInstalled.toArray(new String[notInstalled.size()]);
+	    
+		return Response.ok().entity(entity).build();
 	}
 	
 	@GET
@@ -182,6 +219,15 @@ public class ServersResource {
 			return Response.serverError().entity(message).build();
 	    }
 	    
+	}
+	
+	/**
+	 * Responses
+	 * */
+	
+	public static class InstallPackageResponse {
+		public String[] installed;
+		public String[] notInstalled;
 	}
 
 

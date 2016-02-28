@@ -67,7 +67,7 @@ System.register(['angular2/core'], function(exports_1) {
                 };
                 BackendService.prototype.installPackage = function (serverId, packageName, onLoad) {
                     $.ajax({
-                        url: this.url("/api/servers/" + serverId + "/" + packageName),
+                        url: this.url("/api/servers/" + serverId + "/install/" + packageName),
                         method: "put",
                         success: function (r) {
                             if (onLoad) {
@@ -82,7 +82,7 @@ System.register(['angular2/core'], function(exports_1) {
                 };
                 BackendService.prototype.delPackage = function (serverId, packageName, onLoad) {
                     $.ajax({
-                        url: this.url("/api/servers/" + serverId + "/" + packageName),
+                        url: this.url("/api/servers/" + serverId + "/uninstall/" + packageName),
                         method: "delete",
                         success: function (r) {
                             if (onLoad) {

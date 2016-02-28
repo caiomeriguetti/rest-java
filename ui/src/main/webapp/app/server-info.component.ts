@@ -42,8 +42,7 @@ export class ServerInfoComponent implements OnInit {
 
   }
 
-  addPackage (name) {
-    var names = name.split(" ");
+  addPackage (names) {
     for (var i=0; i < names.length; i++) {
       if (!this.packagesDict[names[i]]) {
         this.packages.push({name: names[i]});
@@ -129,10 +128,10 @@ export class ServerInfoComponent implements OnInit {
         self.installing = false;
         if (ok) {
           self.infoMessage = {
-            text: "The package "+name+" was installed.",
+            text: "The package "+result.installed.join(" ")+" was installed.",
             type: "success"
           };
-          self.addPackage(name);
+          self.addPackage(result.installed);
           self.canInstall = false;
         } else {
           self.infoMessage = {

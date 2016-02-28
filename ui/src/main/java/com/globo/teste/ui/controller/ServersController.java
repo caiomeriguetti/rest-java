@@ -24,7 +24,7 @@ import com.globo.teste.ui.config.Env;
 public class ServersController {
 	
 	@RequestMapping(
-		value="/servers/{id}/{package}", 
+		value="/servers/{id}/uninstall/{package}", 
 		produces="application/json", 
 		method=RequestMethod.DELETE
 	)
@@ -34,7 +34,7 @@ public class ServersController {
 	    RestTemplate request = new RestTemplate();
 	    try {
 	    	return request.exchange(
-	    		backendUrl("/servers/"+id+"/"+packageName), HttpMethod.DELETE, 
+	    		backendUrl("/servers/"+id+"/uninstall/"+packageName), HttpMethod.DELETE, 
         		null, String.class
     	    );
 	    } catch (HttpServerErrorException e) {
@@ -44,7 +44,7 @@ public class ServersController {
 	}
 	
 	@RequestMapping(
-		value="/servers/{id}/{package}", 
+		value="/servers/{id}/install/{package}", 
 		produces="application/json", 
 		method=RequestMethod.PUT
 	)
@@ -54,7 +54,7 @@ public class ServersController {
 	    RestTemplate request = new RestTemplate();
 	    try {
 	    	return request.exchange(
-	    		backendUrl("/servers/"+id+"/"+packageName), HttpMethod.PUT, 
+	    		backendUrl("/servers/"+id+"/install/"+packageName), HttpMethod.PUT, 
         		null, String.class
     	    );
 	    } catch (HttpServerErrorException e) {

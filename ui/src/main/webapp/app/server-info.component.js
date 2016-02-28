@@ -46,8 +46,7 @@ System.register(['angular2/core', './backend.service'], function(exports_1) {
                 ;
                 ServerInfoComponent.prototype.ngOnInit = function () {
                 };
-                ServerInfoComponent.prototype.addPackage = function (name) {
-                    var names = name.split(" ");
+                ServerInfoComponent.prototype.addPackage = function (names) {
                     for (var i = 0; i < names.length; i++) {
                         if (!this.packagesDict[names[i]]) {
                             this.packages.push({ name: names[i] });
@@ -125,10 +124,10 @@ System.register(['angular2/core', './backend.service'], function(exports_1) {
                             self.installing = false;
                             if (ok) {
                                 self.infoMessage = {
-                                    text: "The package " + name + " was installed.",
+                                    text: "The package " + result.installed.join(" ") + " was installed.",
                                     type: "success"
                                 };
-                                self.addPackage(name);
+                                self.addPackage(result.installed);
                                 self.canInstall = false;
                             }
                             else {
