@@ -23,15 +23,18 @@ public class ServerServiceImpl implements ServerService {
 	/**
 	 * Uninstall a package on a server
 	 * */
-	public boolean uninstallPackage(String id, String packageName) {
+	public String uninstallPackage(String id, String packageName) {
 		Server server = getServerById(id);
 		CommandBuilder builder = CommandBuilderFactory.getBuilder(server);
 		
 		RemoteCommand cmd = new RemoteCommand(builder.uninstallPackageCommand(packageName));
 		cmd.setSudo(true);
-	    cmd.execute(server);
+	    String result = cmd.execute(server);
+	    if (!this.hasPackage(server, packageName)) {
+	    	return result;
+	    }
 		
-		return !this.hasPackage(server, packageName);
+		return null;
 	}
 	
 	/**

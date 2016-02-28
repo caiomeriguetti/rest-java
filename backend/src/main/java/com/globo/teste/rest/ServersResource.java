@@ -34,16 +34,44 @@ public class ServersResource {
 								  @NotNull @PathParam("package") String packageName) {
 		
 		if (packageName.isEmpty()) {
-			return Response.status(Response.Status.BAD_REQUEST).build();
+			GenericMessage message = new GenericMessage();
+			message.text = "Package name cannot be empty";
+			
+			return Response.status(Response.Status.BAD_REQUEST).entity(message).build();
 		}
 		
-		boolean success = serverService.uninstallPackage(id, packageName);
+		List<String> uninstalled = new ArrayList<String>();
+		
+		String[] names;
+		
+		if (packageName.contains(" ")) {
+			names = packageName.split(" ");
+			
+		} else {
+			names = new String[1];
+			names[0] = packageName;
+		}
+
+		for (String pName: names) {
+			if (uninstalled.contains(pName)) {
+				continue;
+			}
+			
+			String success = serverService.uninstallPackage(id, pName);
+			
+			if (success != null) {
+				uninstalled.add(pName);
+			}
+		}
 	    
-		if (!success) {
-			return Response.serverError().build();
-		}
+	    if (uninstalled.size() == 0) {
+	    	return Response.serverError().build();
+	    }
+	    
+	    InstallPackageResponse entity = new InstallPackageResponse();
+	    entity.notInstalled = uninstalled.toArray(new String[uninstalled.size()]);
 		
-		return Response.ok().build();
+		return Response.ok().entity(entity).build();
 		
 	}
 	

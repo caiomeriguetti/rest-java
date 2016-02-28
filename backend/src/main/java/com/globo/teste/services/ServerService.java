@@ -4,7 +4,7 @@ import com.globo.teste.model.Server;
 import com.globo.teste.model.ServerPackage;
 
 public interface ServerService {
-    public boolean uninstallPackage(String id, String packageName);
+    public String uninstallPackage(String id, String packageName);
     public boolean hasPackage(Server server, String packageName);
     public boolean hasPackage(String id, String packageName);
     public String installPackage(String id, String packageName);

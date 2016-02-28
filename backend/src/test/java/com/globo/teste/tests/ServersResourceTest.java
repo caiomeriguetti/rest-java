@@ -46,11 +46,23 @@ public class ServersResourceTest extends JerseyTest {
 		
 		//installing the package on the server
 		String serverId = responseObject.getString("data");
-		request = invocation(target().path("servers/"+serverId+"/install/iotop"));
+		String badPackage = "asdasdasdasd";
+		request = invocation(target().path("servers/"+serverId+"/install/iotop htop "+badPackage));
 		
-		response = request.put(Entity.form(new MultivaluedHashMap<String, String>()));
+		response = request.put(Entity.text(""));
+		entity = response.readEntity(String.class);
 		
 		Assert.assertEquals(200, response.getStatus());
+		
+		JSONObject installResponse = new JSONObject(entity);
+		JSONArray installed = installResponse.getJSONArray("installed");
+		JSONArray notInstalled = installResponse.getJSONArray("notInstalled");
+		String joined = installed.join(" ");
+		
+		Assert.assertTrue(joined.contains("htop"));
+		Assert.assertTrue(joined.contains("iotop"));
+		Assert.assertFalse(joined.contains(badPackage));
+		Assert.assertTrue(notInstalled.join(" ").contains(badPackage));
 		
 		//getting the list of packages
 		request = invocation(target().path("servers/"+serverId+"/packages"));
@@ -66,7 +78,7 @@ public class ServersResourceTest extends JerseyTest {
 		Assert.assertTrue(packageList.length() >= 1);
 		
 		//deleting the package from the server
-		request = invocation(target().path("servers/"+serverId+"/uninstall/iotop"));
+		request = invocation(target().path("servers/"+serverId+"/uninstall/iotop htop asdasdasdaef"));
 		response = request.delete();
 
 		Assert.assertEquals(200, response.getStatus());
