@@ -62,8 +62,7 @@ System.register(['angular2/core', './backend.service'], function(exports_1) {
                         result[0].loading = loading;
                     }
                 };
-                ServerInfoComponent.prototype.removePackage = function (name) {
-                    var names = name.split(" ");
+                ServerInfoComponent.prototype.removePackage = function (names) {
                     for (var i = 0; i < names.length; i++) {
                         this.packagesDict[names[i]] = false;
                         $(this.element.nativeElement).find("[data-packname=\"" + names[i] + "\"]").remove();
@@ -82,10 +81,10 @@ System.register(['angular2/core', './backend.service'], function(exports_1) {
                             self.loading = false;
                             if (ok) {
                                 self.infoMessage = {
-                                    text: "The package " + packageName + " was deleted.",
+                                    text: "The package " + result.notInstalled.join(" ") + " was deleted.",
                                     type: "success"
                                 };
-                                self.removePackage(packageName);
+                                self.removePackage(result.notInstalled);
                                 self.filterList();
                                 self.canInstall = true;
                             }

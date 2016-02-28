@@ -61,8 +61,7 @@ export class ServerInfoComponent implements OnInit {
     }
   }
 
-  removePackage (name) {
-    var names = name.split(" ");
+  removePackage (names) {
     for (var i=0; i<names.length; i++) {
       this.packagesDict[names[i]] = false;
       $(this.element.nativeElement).find("[data-packname=\""+names[i]+"\"]").remove();
@@ -82,10 +81,10 @@ export class ServerInfoComponent implements OnInit {
         self.loading = false;
         if (ok) {
           self.infoMessage = {
-            text: "The package "+packageName+" was deleted.",
+            text: "The package "+result.notInstalled.join(" ")+" was deleted.",
             type: "success"
           };
-          self.removePackage(packageName);
+          self.removePackage(result.notInstalled);
           self.filterList();
           self.canInstall = true;
         } else {
