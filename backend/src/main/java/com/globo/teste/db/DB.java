@@ -12,14 +12,14 @@ public class DB {
     private static final int dbPort = Env.getDbPort();
     private static final String dbName = Env.getDbName();
  
- public DB(){
- };
+	public DB(){
+	};
 
- public static MongoDatabase get(){
-     if (mongoClient == null) {
-         mongoClient = new MongoClient(dbHost , dbPort);
-         db = mongoClient.getDatabase(dbName); 
-     }
-	return db;
- }
+	public static MongoDatabase get(){
+		if (mongoClient == null) {
+			mongoClient = new MongoClient(dbHost , dbPort);
+		    db = mongoClient.getDatabase(dbName); 
+		}
+		return db;
+	}
 }
