@@ -7,7 +7,7 @@ public interface ServerService {
     public boolean uninstallPackage(String id, String packageName);
     public boolean hasPackage(Server server, String packageName);
     public boolean hasPackage(String id, String packageName);
-    public boolean installPackage(String id, String packageName);
+    public String installPackage(String id, String packageName);
     public ServerPackage[] getPackages (String id);
     public Server[] list();
     public Server getServerById(String id);

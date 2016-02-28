@@ -52,18 +52,18 @@ public class ServerServiceImpl implements ServerService {
 	/**
 	 * Install a package on a server
 	 * */
-	public boolean installPackage(String id, String packageName) {
+	public String installPackage(String id, String packageName) {
 		Server server = getServerById(id);
 		CommandBuilder builder = CommandBuilderFactory.getBuilder(server);
 		RemoteCommand cmd = new RemoteCommand(builder.installPackageCommand(packageName));
 		cmd.setSudo(true);
-	    cmd.execute(server);
+	    String result = cmd.execute(server);
 		
 	    if (this.hasPackage(server, packageName)) {
-	    	return true;
+	    	return result;
 	    }
 	    
-		return false;
+		return null;
 	}
 	
 	/**

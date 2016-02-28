@@ -3,6 +3,8 @@ package com.globo.teste.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.bson.Document;
@@ -10,6 +12,7 @@ import org.bson.types.ObjectId;
 
 import com.mongodb.client.FindIterable;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement
 public class Server {
     public String id;

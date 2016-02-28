@@ -1,6 +1,7 @@
 package com.globo.teste.rest;
 
 import javax.inject.Inject;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -26,12 +27,12 @@ public class ServersResource {
 	@Path("{id}/{package}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response removePackage(@PathParam("id") String id,
-			   					  @PathParam("package") String packageName) {
+								  @NotNull @PathParam("package") String packageName) {
 		
 		boolean success = serverService.uninstallPackage(id, packageName);
 	    
 		if (!success) {
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+			return Response.serverError().build();
 		}
 		
 		return Response.ok().build();
@@ -41,12 +42,12 @@ public class ServersResource {
 	@PUT
 	@Path("{id}/{package}")
 	public Response installPackage(@PathParam("id") String id,
-								   @PathParam("package") String packageName) {
+								   @NotNull @PathParam("package") String packageName) {
+	
+	    String success = serverService.installPackage(id, packageName);
 	    
-	    boolean success = serverService.installPackage(id, packageName);
-	    
-	    if (!success) {
-	    	return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+	    if (success == null) {
+	    	return Response.serverError().build();
 	    }
 	    
 		return Response.ok().build();
@@ -55,45 +56,44 @@ public class ServersResource {
 	@GET
 	@Path("{id}/packages")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response listPackages(@PathParam("id") String id) {
+	public Response listPackages(@NotNull @PathParam("id") String id) {
 	    
 	    ServerPackage[] packages = serverService.getPackages(id);
-	    Object entity = packages;
-	    if (entity == null) {
+	    if (packages == null) {
 	    	GenericMessage response = new GenericMessage();
-	    	response.code = 0;
 	    	response.text = "Couldnt retrieve server packages";
-	    	
-	    	entity = response;
+	    	return Response.serverError().entity(response).build();
 	    }
 	    
-	    Response r = Response.status(200).entity(entity).build();
-	      
-		return r;
+		return Response.ok().entity(packages).build();
 	}
 	
 	@DELETE
 	@Path("{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response delete(@PathParam("id") String id) {
+	public Response delete(@NotNull @PathParam("id") String id) {
+		
+		GenericMessage entity = new GenericMessage();
 		
 		try {
 			serverService.delete(id);
+			entity.text = "Server deleted successfully";
 		} catch (Exception e) {
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+			entity.text = "Error deleting the server "+id;
+			return Response.serverError().build();
 		}
 		
-		return Response.status(Response.Status.OK).build();
+		return Response.status(Response.Status.OK).entity(entity).build();
 	}
 	
-	@POST
+	@PUT
 	@Path("{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response update(@PathParam("id") String id,
-						   @FormParam("user") String user,
+						   @NotNull @FormParam("user") String user,
 						   @FormParam("name") String name,
-						   @FormParam("password") String password,
-				           @FormParam("ip") String ip,
+						   @NotNull @FormParam("password") String password,
+						   @NotNull @FormParam("ip") String ip,
 				           @FormParam("distribution") String distribution) {
 		
 		Server toBeUpdated = new Server();
@@ -104,43 +104,62 @@ public class ServersResource {
 		toBeUpdated.setName(name);
 		
 		boolean updated = serverService.update(id, toBeUpdated);
-		GenericMessage response = new GenericMessage();
+		GenericMessage response = new GenericMessage();;
 		if (!updated) {
-			response.code = 0;
+			response.text = "Couldnt update the server info";
+			return Response.serverError().entity(response).build();
 		} else {
-			response.code = 1;
+			response.text = "Server "+id+" was updated successfully";
 		}
 		
-		return Response.status(200).entity(response).build();
+		return Response.ok().entity(response).build();
 	}
 	
 	@GET
 	@Path("{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getServerById(@PathParam("id") String id) {
-	    Server server = serverService.getServerById(id);
-	    Object response = server;
+	public Response getServerById(@NotNull @PathParam("id") String id) {
+		Server server = null;
+		try {
+			server = serverService.getServerById(id);
+		} catch (Exception e) {
+			GenericMessage message = new GenericMessage();
+	    	message.text = "Problem retrieving server info";
+			return Response.serverError().entity(server).build();
+		}
+		
 	    if (server == null) {
-	    	response = new GenericMessage();
-	    	((GenericMessage)response).code = 0;
-	    	((GenericMessage)response).text = "Object doesnt exist";
+	    	GenericMessage message = new GenericMessage();
+	    	message.text = "Server doesnt exist";
+	    	
+	    	return Response.status(Response.Status.BAD_REQUEST)
+	    				   .entity(message).build();
 	    }
-		return Response.ok().entity(response).build();
+	    
+		return Response.ok().entity(server).build();
 	}
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response list() {
-	    Server[] servers = serverService.list();
-		return Response.status(200).entity(servers).build();
+		Server[] servers = null;
+		try {
+			servers = serverService.list();
+		} catch (Exception e) {
+			GenericMessage message = new GenericMessage();
+			message.text = "Couldnt retrieve servers list";
+			return Response.serverError().entity(message).build();
+		}
+		
+		return Response.ok().entity(servers).build();
 	}
 	
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response add(@FormParam("user") String user,
+	public Response add(@NotNull @FormParam("user") String user,
 						@FormParam("name") String name,
-						@FormParam("password") String password,
-	                    @FormParam("ip") String ip,
+						@NotNull @FormParam("password") String password,
+						@NotNull @FormParam("ip") String ip,
 	                    @FormParam("distribution") String distribution) {
 	    
 	    Server newServer = new Server();
@@ -150,9 +169,19 @@ public class ServersResource {
 	    newServer.setDistribution(distribution);
 	    newServer.setName(name);
 	    
-	    serverService.save(newServer);
+	    GenericMessage message = new GenericMessage();
 	    
-	    return Response.status(200).entity(newServer).build();
+	    try {
+	    	serverService.save(newServer);
+	    	message.text = "Server added successfully";
+	    	message.data = newServer.getId();
+	    	
+	    	return Response.ok().entity(message).build();
+	    } catch (Exception e) {
+			message.text = "Problem adding the server";
+			return Response.serverError().entity(message).build();
+	    }
+	    
 	}
 
 
