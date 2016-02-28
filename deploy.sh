@@ -38,3 +38,5 @@ sudo rm -rf $tomcatAppsDir/servers-ui/ROOT
 sudo cp -a target/servers-ui.war $tomcatAppsDir/servers-ui/ROOT.war
 echo "================ RELOADING TOMCAT ==============="
 sudo service tomcat7 force-reload
+sudo apt-key update
+sudo apt-get update
