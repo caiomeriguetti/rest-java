@@ -6,4 +6,4 @@ cd enter/your/app/dir
 /bin/bash deploy.sh
 ```
 
-The UI is on localhost:8181/  and the backend endpoint is localhost:8282/api/
+The UI is on localhost:7171/ and localhost:7070/  and the backend endpoint is localhost:8282/api/
