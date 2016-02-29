@@ -4,7 +4,7 @@
   <groupId>com.globo.teste</groupId>
   <artifactId>https-reverse-proxy</artifactId>
   <version>0.1-SNAPSHOT</version>
-  <packaging>war</packaging>
+  <packaging>jar</packaging>
   <name>HTTPS Reverse Proxy</name>
 
  <dependencies>
