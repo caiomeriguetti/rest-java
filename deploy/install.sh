@@ -10,14 +10,15 @@ appPath=$(pwd)
 tomcatConfigPath="/etc/tomcat7"
 
 sudo apt-get install -y software-properties-common python-software-properties
-sudo add-apt-repository ppa:webupd8team/java
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927
 echo "deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list
 sudo apt-get update
 
+#python
+sudo ./install-python.sh
+
 #jdk
-sudo apt-get install -y oracle-java8-installer
-sudo apt-get install -y oracle-java8-set-default
+sudo ./install-java8.sh
 
 #tomcat7
 sudo apt-get install -y tomcat7
@@ -29,8 +30,7 @@ sudo apt-get install -y mongodb-org
 sudo apt-get -y install maven
 
 #npm+node
-sudo apt-get -y install npm
-sudo apt-get -y install nodejs
+sudo ./install-node.sh
 
 sudo apt-key update
 sudo apt-get update

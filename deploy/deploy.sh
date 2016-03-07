@@ -10,14 +10,12 @@ function appdir {
 }
 
 tomcatConfigPath="/etc/tomcat7"
-appPath=$(appdir)
+appPath="$(appdir)/.."
 tomcatAppsDir="/var/lib/tomcat7"
+serverXmlPath="$tomcatConfigPath/server.xml"
 
-if [ ! -f $tomcatConfigPath/server.xml.backup ]; then
-  sudo cp $tomcatConfigPath/server.xml $tomcatConfigPath/server.xml.backup
-fi
-
-sudo cp $appPath/server.xml.template $tomcatConfigPath/server.xml
+echo "============== CONFIGURING TOMCAT7 ==============="
+sudo ./configure-tomcat7.py $serverXmlPath
 
 #backend
 echo "================ BUILDING BACKEND ==============="
