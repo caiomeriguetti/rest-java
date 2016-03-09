@@ -56,7 +56,7 @@
           <execution><goals><goal>java</goal></goals></execution>
         </executions>
         <configuration>
-          <mainClass>ProxyServer</mainClass>
+          <mainClass>com.rproxy.example.RandomForwarderApp</mainClass>
         </configuration>
       </plugin>
     </plugins>
