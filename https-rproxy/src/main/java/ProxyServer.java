@@ -76,7 +76,7 @@ public class ProxyServer {
         
         ServletHolder holder = new ServletHolder();
         holder.setInitParameters(servletInitParams);
-        holder.setServlet(new BackendServlet());
+        holder.setServlet(new AppSelectorServlet());
         
         ServletHandler handler = new ServletHandler();
         handler.addServletWithMapping(holder, "/*");
