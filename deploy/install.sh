@@ -34,5 +34,3 @@ sudo ./install-node.sh
 
 sudo apt-key update
 sudo apt-get update
-
-

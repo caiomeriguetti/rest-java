@@ -15,5 +15,4 @@ https-rproxy/.classpath
 https-rproxy/.project
 https-rproxy/.settings
 
-Python-2.7.11
-Python-2.7.11.tar.xz
+deploy/tmp
