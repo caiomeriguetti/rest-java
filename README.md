@@ -1,14 +1,14 @@
 Installing packages:
 
 ```bash
-cd enter/your/app/dir
+cd [enter/your/app/dir]/deploy
 /bin/bash install.sh
 ```
 
 Deploy the ui and REST api:
 
 ```bash
-cd enter/your/app/dir
+cd [enter/your/app/dir]/deploy
 /bin/bash deploy.sh
 ```
 
