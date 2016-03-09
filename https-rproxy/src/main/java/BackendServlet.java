@@ -1,3 +1,5 @@
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,8 +13,6 @@ public class BackendServlet extends ProxyServlet {
         
         protected String rewriteTarget(HttpServletRequest clientRequest){
             
-            String uri = clientRequest.getRequestURI().toString();
-            
             List<String> backendServers = new ArrayList<String>();
             backendServers.add("localhost:7171");
             backendServers.add("localhost:7070");
@@ -25,7 +25,19 @@ public class BackendServlet extends ProxyServlet {
                 selectedBackend = backendServers.get(1);
             }
             
-            return "http://"+selectedBackend+uri;
+            URL url;
+            try {
+                url = new URL(clientRequest.getRequestURL().toString() + "?" + clientRequest.getQueryString());
+                String newUrl = "http://"+selectedBackend+url.getPath();
+                if (url.getQuery() != null && !url.getQuery().isEmpty()) {
+                    newUrl = newUrl + "?" + url.getQuery();
+                }
+                return newUrl;
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            
+            return null;
         }
 
     }
