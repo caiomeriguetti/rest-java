@@ -9,23 +9,34 @@ function appdir {
   pwd
 }
 
-tomcatConfigPath="/etc/tomcat7"
 appPath="$(appdir)/.."
-tomcatAppsDir="/var/lib/tomcat7"
-serverXmlPath="$tomcatConfigPath/server.xml"
+tomcatInstancePath="$appPath/tomcat-instance"
+serverXmlPath="$tomcatInstancePath/conf/server.xml"
 
 echo "============== CONFIGURING TOMCAT7 ==============="
+sudo service tomcat7 stop
+cd $appPath
+if [ ! -f tomcatConfigPath ]; then
+  sudo fuser -k 8080/tcp
+  sudo fuser -k 8005/tcp
+  tomcat7-instance-create "tomcat-instance"
+fi
+
+cd "$appPath/deploy"
 sudo ./configure-tomcat7.py $serverXmlPath
+
+cd $tomcatInstancePath
+sudo ./bin/startup.sh
 
 #backend
 echo "================ BUILDING BACKEND ==============="
 cd $appPath/backend
 sudo mvn clean package
 echo "================ DEPLOYING BACKEND INTO TOMCAT ==============="
-sudo mkdir -p $tomcatAppsDir/servers-backend/
-sudo rm -rf $tomcatAppsDir/servers-backend/ROOT.war
-sudo rm -rf $tomcatAppsDir/servers-backend/ROOT
-sudo cp -a target/rest-java.war $tomcatAppsDir/servers-backend/ROOT.war
+sudo mkdir -p $tomcatInstancePath/servers-backend/
+sudo rm -rf $tomcatInstancePath/servers-backend/ROOT.war
+sudo rm -rf $tomcatInstancePath/servers-backend/ROOT
+sudo cp -a target/rest-java.war $tomcatInstancePath/servers-backend/ROOT.war
 
 
 #frontend
@@ -35,11 +46,14 @@ sudo npm install
 cd $appPath/ui
 sudo mvn clean package
 echo "================ DEPLOYING FRONTEND INTO TOMCAT ==============="
-sudo mkdir -p $tomcatAppsDir/servers-ui/
-sudo rm -rf $tomcatAppsDir/servers-ui/ROOT.war
-sudo rm -rf $tomcatAppsDir/servers-ui/ROOT
-sudo cp -a target/servers-ui.war $tomcatAppsDir/servers-ui/ROOT.war
-echo "================ RELOADING TOMCAT ==============="
-sudo service tomcat7 restart
+sudo mkdir -p $tomcatInstancePath/servers-ui/
+sudo mkdir -p $tomcatInstancePath/servers-ui2/
+sudo rm -rf $tomcatInstancePath/servers-ui/ROOT.war
+sudo rm -rf $tomcatInstancePath/servers-ui/ROOT
+sudo rm -rf $tomcatInstancePath/servers-ui2/ROOT.war
+sudo rm -rf $tomcatInstancePath/servers-ui2/ROOT
+sudo cp -a target/servers-ui.war $tomcatInstancePath/servers-ui/ROOT.war
+sudo cp -a target/servers-ui.war $tomcatInstancePath/servers-ui2/ROOT.war
+
 sudo apt-key update
 sudo apt-get update

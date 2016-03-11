@@ -46,7 +46,7 @@ server.append(Soup("""
 <Service name="servers-ui">
   <Connector port="7070" protocol="org.apache.coyote.http11.Http11NioProtocol"/>
   <Engine defaultHost="localhost" name="Catalina70">
-   <Host appBase="servers-ui" autoDeploy="true" name="localhost" unpackWARs="true"/>
+   <Host appBase="servers-ui2" autoDeploy="true" name="localhost" unpackWARs="true"/>
   </Engine>
 </Service>
 """, "xml").find("Service"))

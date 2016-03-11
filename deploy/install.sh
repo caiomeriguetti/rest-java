@@ -22,6 +22,7 @@ sudo ./install-java8.sh
 
 #tomcat7
 sudo apt-get install -y tomcat7
+sudo apt-get install tomcat7-user
 
 #mongodb
 sudo apt-get install -y mongodb-org
