@@ -9,6 +9,8 @@ function appdir {
   pwd
 }
 
+export JAVA_HOME="/opt/jdk/jdk1.8.0_73/"
+
 appPath="$(appdir)/.."
 tomcatInstancePath="$appPath/tomcat-instance"
 serverXmlPath="$tomcatInstancePath/conf/server.xml"
