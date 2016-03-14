@@ -8,7 +8,7 @@ public class Env {
     }
     
     public static int getDbPort() {
-        return Integer.parseInt(getEnvVar("SERVERSAPP_DB_PORT", "27017"));
+        return Integer.parseInt(getEnvVar("SERVERSAPP_DB_PORT", "27018"));
     }
     
     public static String getDbName() {

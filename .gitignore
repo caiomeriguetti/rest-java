@@ -17,3 +17,4 @@ https-rproxy/.settings
 
 deploy/tmp
 tomcat-instance
+data

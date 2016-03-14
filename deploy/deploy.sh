@@ -57,5 +57,8 @@ sudo rm -rf $tomcatInstancePath/servers-ui2/ROOT
 sudo cp -a target/servers-ui.war $tomcatInstancePath/servers-ui/ROOT.war
 sudo cp -a target/servers-ui.war $tomcatInstancePath/servers-ui2/ROOT.war
 
+echo "================ RESTARTING MONGODB INSTANCE ==============="
+source init-mongodb.sh
+
 sudo apt-key update
 sudo apt-get update
