@@ -1,0 +1,12 @@
+version: '3'
+services:
+  backend:
+    build: .
+    command: "supervisord -n"
+    volumes:
+      - ./mongod-data:/data/db
+    environment:
+      - CATALINA_HOME=/usr/share/tomcat7
+      - CATALINA_BASE=/var/lib/tomcat7
+    ports:
+      - 8080:80

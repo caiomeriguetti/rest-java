@@ -1,7 +1,0 @@
-#!/bin/sh
-
-cd /home/ubuntu/javaapps/globoteste
-sudo git fetch origin
-sudo git reset --hard origin/master
-sudo git clean -f -d
-./deploy.sh
